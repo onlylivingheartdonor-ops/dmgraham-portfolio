@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="About David M. Graham — Content Architect & Instructional Designer. Resume, background, and contact information.">
+<meta name="author" content="David M. Graham">
+<title>About — David M. Graham</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Playfair Display', 'Georgia', 'serif'],
+        body: ['DM Sans', 'system-ui', 'sans-serif']
+      },
+      colors: {
+        gold: '#C9920A',
+        'gold-light': '#F4B942',
+        cream: '#F7F5F0',
+        ink: '#0D0D0F',
+        card: '#141420',
+        'card-border': '#1E1E2E'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { font-family: 'DM Sans', system-ui, sans-serif; }
+h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
+body { background: #0D0D0F; color: #F7F5F0; }
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C9920A; border-radius: 99px; }
+
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: #C9920A;
+  transition: width .22s cubic-bezier(.4,0,.2,1);
+}
+.nav-link:hover::after,
+.nav-link.active::after { width: 100%; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: .08s; }
+.d2 { transition-delay: .16s; }
+.d3 { transition-delay: .24s; }
+
+/* resume section dividers */
+.resume-section { border-top: 1px solid #1E1E2E; padding-top: 2.5rem; margin-top: 2.5rem; }
+
+/* job entry */
+.job-entry { padding-bottom: 2rem; }
+.job-entry + .job-entry { border-top: 1px solid #1E1E2E; padding-top: 2rem; }
+
+/* skill tag */
+.skill-tag {
+  background: #141420;
+  border: 1px solid #1E1E2E;
+  color: #a1a1aa;
+  font-size: .75rem;
+  font-weight: 500;
+  padding: .35rem .75rem;
+  border-radius: 99px;
+  transition: border-color .18s, color .18s;
+}
+.skill-tag:hover { border-color: #C9920A; color: #F7F5F0; }
+
+/* contact link */
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  color: #a1a1aa;
+  transition: color .18s;
+  text-decoration: none;
+  font-size: .95rem;
+}
+.contact-link:hover { color: #F7F5F0; }
+.contact-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #141420;
+  border: 1px solid #1E1E2E;
+  border-radius: .5rem;
+  flex-shrink: 0;
+  transition: border-color .18s, background .18s;
+}
+.contact-link:hover .contact-icon { border-color: #C9920A; background: rgba(201,146,10,.1); }
+
+[x-cloak] { display: none !important; }
+</style>
+</head>
+
+<body x-data="{ mm: false, sc: false }" @scroll.window="sc = window.scrollY > 24">
+
+<!-- ═══ NAV ═══ -->
+<header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+  :class="sc ? 'bg-ink/90 backdrop-blur-md shadow-sm shadow-black/30 border-b border-white/5' : ''">
+  <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
+
+    <a href="index.html" class="font-display font-bold text-lg tracking-tight text-cream">
+      David M. Graham
+    </a>
+
+    <ul class="hidden md:flex items-center gap-10 text-sm font-medium" role="list">
+      <li><a href="index.html#presentations" class="nav-link text-zinc-400 hover:text-cream transition-colors py-1">Work</a></li>
+      <li><a href="about.html" class="nav-link active text-cream py-1">About</a></li>
+      <li><a href="#contact" class="nav-link text-zinc-400 hover:text-cream transition-colors py-1">Contact</a></li>
+    </ul>
+
+    <button @click="mm=!mm" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800" :aria-expanded="mm" aria-label="Toggle menu">
+      <svg x-show="!mm" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg x-show="mm"  class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </nav>
+
+  <div x-show="mm" x-cloak
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 -translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 -translate-y-2"
+    class="md:hidden bg-ink border-t border-white/5">
+    <ul class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium" role="list">
+      <li><a href="index.html#presentations" @click="mm=false" class="text-zinc-300 hover:text-cream transition-colors">Work</a></li>
+      <li><a href="about.html" @click="mm=false" class="text-zinc-300 hover:text-cream transition-colors">About</a></li>
+      <li><a href="#contact" @click="mm=false" class="text-zinc-300 hover:text-cream transition-colors">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="relative z-10 pt-24 pb-32 px-6 max-w-6xl mx-auto">
+
+  <!-- ═══ PAGE HEADER ═══ -->
+  <div class="mb-16">
+    <p class="reveal text-zinc-500 text-xs font-medium tracking-widest uppercase mb-4">About</p>
+    <h1 class="reveal d1 font-display text-5xl md:text-6xl text-cream leading-tight mb-6">
+      David M. Graham
+    </h1>
+    <div class="h-px w-24 bg-gradient-to-r from-gold to-transparent mt-2"></div>
+  </div>
+
+  <!-- ═══ TWO-COLUMN LAYOUT ═══ -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+    <!-- LEFT COLUMN: bio + contact -->
+    <div class="lg:col-span-1">
+
+      <!-- bio -->
+      <div class="reveal mb-10">
+        <h2 class="font-display text-2xl text-cream mb-4">Background</h2>
+        <div class="text-zinc-400 text-sm leading-relaxed space-y-3">
+          <p>
+            I'm a Content Architect and Instructional Designer with over a decade of experience
+            building engaging, multi-modal learning and digital content — across government,
+            healthcare-adjacent, and corporate environments.
+          </p>
+          <p>
+            My work sits at the intersection of writing, design, and technology.
+            I hold an MFA in Creative Writing and an MBA, which means I can translate
+            complex technical information into content that's both accurate and genuinely
+            compelling for the people who need to use it.
+          </p>
+          <p>
+            Currently based in Macon, Georgia. Open to remote engagements.
+          </p>
+        </div>
+      </div>
+
+      <!-- education -->
+      <div class="reveal mb-10">
+        <h2 class="font-display text-2xl text-cream mb-5">Education</h2>
+        <div class="space-y-4 text-sm">
+          <div>
+            <p class="text-cream font-medium">Master of Fine Arts (MFA)</p>
+            <p class="text-zinc-500">Creative Writing · University of Nebraska at Omaha</p>
+          </div>
+          <div>
+            <p class="text-cream font-medium">Master of Business Administration (MBA)</p>
+            <p class="text-zinc-500">Business Administration & Management · Western Governors University</p>
+          </div>
+          <div>
+            <p class="text-cream font-medium">Bachelor of Arts (BA)</p>
+            <p class="text-zinc-500">English Language & Literature · University of Georgia</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- honors -->
+      <div class="reveal mb-10">
+        <h2 class="font-display text-2xl text-cream mb-5">Honors</h2>
+        <div class="space-y-2 text-sm text-zinc-400">
+          <p>Phi Kappa Phi Honor Society</p>
+          <p>National Dean's List</p>
+          <p>Who's Who Among Students at American Universities and Colleges</p>
+        </div>
+      </div>
+
+      <!-- skills -->
+      <div class="reveal">
+        <h2 class="font-display text-2xl text-cream mb-5">Skills</h2>
+        <div class="flex flex-wrap gap-2">
+          <span class="skill-tag">Digital/Web Content</span>
+          <span class="skill-tag">eLearning (Articulate/Camtasia)</span>
+          <span class="skill-tag">Technical Writing</span>
+          <span class="skill-tag">Scriptwriting</span>
+          <span class="skill-tag">Interactive Design</span>
+          <span class="skill-tag">Agile</span>
+          <span class="skill-tag">ADDIE</span>
+          <span class="skill-tag">Adult Learning Principles</span>
+          <span class="skill-tag">Train-the-Trainer</span>
+          <span class="skill-tag">Learning Needs Analysis</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: experience -->
+    <div class="lg:col-span-2">
+
+      <div class="reveal mb-8">
+        <h2 class="font-display text-2xl text-cream mb-2">Experience</h2>
+        <p class="text-zinc-500 text-xs tracking-widest uppercase">Professional history</p>
+      </div>
+
+      <!-- Blue Bird -->
+      <div class="job-entry reveal">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-4">
+          <div>
+            <h3 class="font-display text-lg text-cream">Senior Learning Designer</h3>
+            <p class="text-gold text-sm font-medium">Blue Bird Body Company</p>
+          </div>
+          <span class="text-zinc-500 text-xs font-medium tracking-wide shrink-0 mt-1">Mar 2025 – Present</span>
+        </div>
+        <ul class="space-y-3 text-sm text-zinc-400">
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Strategic Leadership:</strong> Led analysis of critical learning needs and partnered with executive stakeholders to define and implement learning strategies that supported organizational goals.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">End-to-End Project Management:</strong> Managed full development lifecycles — from scope definition through design, development, and evaluation — on time and within budget.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Innovative Design:</strong> Developed a varied portfolio including eLearning modules, instructor-led materials, and interactive digital content applying adult learning principles.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Data & Evaluation:</strong> Conducted rigorous evaluations of training interventions, analyzing quarterly data to communicate verifiable ROI to stakeholders.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Accenture -->
+      <div class="job-entry reveal">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-4">
+          <div>
+            <h3 class="font-display text-lg text-cream">Management Consultant Delivery Specialist</h3>
+            <p class="text-gold text-sm font-medium">Accenture</p>
+          </div>
+          <span class="text-zinc-500 text-xs font-medium tracking-wide shrink-0 mt-1">Oct 2023 – Mar 2025</span>
+        </div>
+        <ul class="space-y-3 text-sm text-zinc-400">
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Business Translation:</strong> Translated complex customer requirements into practical business solutions, designing and implementing streamlined processes based on data analysis.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Content Deployment:</strong> Designed and created SCORM-compliant learning packages, ensuring seamless upload and functionality within the Moodle LMS.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Change Management:</strong> Supported organizational change through hands-on employee training, user sessions, and stakeholder communication.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- smoothstack -->
+      <div class="job-entry reveal">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-4">
+          <div>
+            <h3 class="font-display text-lg text-cream">Instructional Designer</h3>
+            <p class="text-gold text-sm font-medium">smoothstack <span class="text-zinc-500 font-normal">(for Accenture)</span></p>
+          </div>
+          <span class="text-zinc-500 text-xs font-medium tracking-wide shrink-0 mt-1">Nov 2021 – Oct 2023</span>
+        </div>
+        <ul class="space-y-3 text-sm text-zinc-400">
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Curriculum Development:</strong> Employed ADDIE methodology to design, develop, and deliver highly interactive curriculum across eLearning, instructor-led, and blended modalities.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Content Production:</strong> Authored scripts for video and audio content; developed support materials using Adobe Creative Suite.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Continuous Improvement:</strong> Analyzed, updated, and refined existing online content to ensure relevance and effectiveness.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Metris Global -->
+      <div class="job-entry reveal">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-4">
+          <div>
+            <h3 class="font-display text-lg text-cream">Training Technical Writer</h3>
+            <p class="text-gold text-sm font-medium">Metris Global</p>
+          </div>
+          <span class="text-zinc-500 text-xs font-medium tracking-wide shrink-0 mt-1">Jul 2021 – Apr 2023</span>
+        </div>
+        <ul class="space-y-3 text-sm text-zinc-400">
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Regulatory Precision:</strong> Provided content and copyediting to ensure all documents met strict standards for completeness, accuracy, and compliance in a regulated environment.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Quality & Version Control:</strong> Managed meticulous version control throughout editing processes to guarantee final products met superior industry and government standards.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-gold mt-1 shrink-0">·</span>
+            <span><strong class="text-zinc-300">Narrative Creation:</strong> Produced original non-technical narratives capturing High-Performance Training (HPT) success stories for public and internal distribution.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section id="contact" class="mt-24 pt-16 border-t border-white/5">
+    <div class="reveal mb-10">
+      <p class="text-zinc-500 text-xs font-medium tracking-widest uppercase mb-3">Get in touch</p>
+      <h2 class="font-display text-4xl md:text-5xl text-cream">Let's work together.</h2>
+      <p class="text-zinc-400 mt-4 max-w-xl leading-relaxed">Open to instructional design, content architecture, and interactive presentation projects — remote or otherwise.</p>
+    </div>
+
+    <div class="reveal flex flex-col gap-4 max-w-sm">
+      <a href="mailto:onlylivingheartdonor@gmail.com" class="contact-link">
+        <span class="contact-icon">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </span>
+        onlylivingheartdonor@gmail.com
+      </a>
+      <a href="tel:+13233959985" class="contact-link">
+        <span class="contact-icon">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        </span>
+        323-395-9985
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="border-t border-white/5 relative z-10 mt-16">
+  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p class="text-sm text-zinc-500">© <span id="yr"></span> David M. Graham. All rights reserved.</p>
+    <a href="index.html" class="text-sm text-zinc-500 hover:text-gold transition-colors">← Back to portfolio</a>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

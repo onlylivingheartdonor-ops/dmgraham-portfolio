@@ -1,0 +1,9 @@
+[
+  {
+    "title": "Death by PowerPoint",
+    "description": "A full-featured HTML5 presentation on avoiding common PowerPoint mistakes — built with custom animation engine, branching audio, and an interactive quiz.",
+    "icon": "icons/dbp.png",
+    "url": "presentations/dbp-build/index.html",
+    "label": "INTERACTIVE PRESENTATION"
+  }
+]

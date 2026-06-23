@@ -1,0 +1,1701 @@
+/* ===================================================================
+   STYLE.CSS
+   Shell-level styles only: stage container, fonts, debug tool.
+   Per-slide visual styles belong inside that slide's own file,
+   scoped to its slide class (e.g. .slide-01 { ... }).
+   =================================================================== */
+
+@font-face {
+  font-family: 'Bodoni Poster Compressed';
+  src: url('assets/fonts/BodoniMTPosterCompressed.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Vladimir Script';
+  src: url('assets/fonts/VladimirScript.ttf') format('truetype');
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+#stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* TEMPORARY debug aid: shows current slide ID on screen so Dave can
+   report exact slide numbers instead of describing content. Remove
+   once we're past active debugging. */
+#debug-slide-num {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, .75);
+  color: #0f0;
+  font-family: monospace;
+  font-size: 20px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity .7s ease;
+}
+
+.slide.show {
+  opacity: 1;
+}
+
+/* Outgoing element in the default two-element crossfade — starts
+   fully visible, animate-out fades it to 0 while the incoming
+   element (.slide.show, above) fades in simultaneously. */
+.slide.crossfade-out {
+  opacity: 1;
+  transition: opacity .7s ease;
+}
+
+.slide.crossfade-out.animate-out {
+  opacity: 0;
+}
+
+/* True two-element push transitions, matching v49's real push
+   mechanism: outgoing slide animates fully off-screen while the
+   incoming slide animates fully in, simultaneously. Opacity stays
+   at 1 throughout — pure movement, no fade. Duration/easing match
+   v49's confirmed real values exactly (.8s, cubic-bezier(.4,0,.2,1)).
+   Applied by app.js for slides whose manifest entry sets
+   transition: "push-up"/"push-down". */
+
+.slide.push-in-up {
+  opacity: 1;
+  transform: translateY(100%);
+  transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+}
+
+.slide.push-in-up.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide.push-out-up.animate-out {
+  transform: translateY(-100%);
+  transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+}
+
+.slide.push-in-down {
+  opacity: 1;
+  transform: translateY(-100%);
+  transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+}
+
+.slide.push-in-down.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide.push-out-down.animate-out {
+  transform: translateY(100%);
+  transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+}
+
+.slide-missing {
+  color: #fff;
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+/* Generic "fill the frame" utility — used by any slide's background
+   image/video, not scoped to a specific slide. */
+.bg-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== Slide 01: intro video + title, becomes police image at video end ===== */
+.slide-01 {
+  background: #000;
+  /* Exempt from the default .slide fade-in (added for slide 3
+     onward) — slide 1's own play-overlay/title timing was already
+     tuned and confirmed; the wrapper fade would alter how it feels
+     on entry. */
+  opacity: 1 !important;
+}
+
+.slide-01 .intro-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.slide-01 .police-bg {
+  z-index: 1;
+  opacity: 0;
+}
+
+.slide-01 .police-bg.show {
+  animation: policeFadeIn 6s linear forwards;
+}
+
+@keyframes policeFadeIn {
+  to { opacity: 1; }
+}
+
+.slide-01 .play-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, .25);
+  cursor: pointer;
+  transition: opacity .4s ease;
+}
+
+.slide-01 .play-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slide-01 .play-btn {
+  width: 15.278vh;
+  height: 15.278vh;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .18);
+  border: 3px solid rgba(255, 255, 255, .8);
+  color: #fff;
+  font-size: 5.833vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 8px;
+}
+
+.slide-01 .ihp-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.slide-01 .ihp-line1 {
+  font-family: 'Bodoni Poster Compressed', serif;
+  font-size: 8.333vh;
+  color: #fff;
+  text-align: center;
+  text-shadow: 2px 2px 12px rgba(0, 0, 0, .9);
+  opacity: 0;
+}
+
+.slide-01 .ihp-line2 {
+  font-family: 'Vladimir Script', cursive;
+  font-size: 8.333vh;
+  color: #fff;
+  text-align: center;
+  text-shadow: 2px 2px 12px rgba(0, 0, 0, .9);
+  opacity: 0;
+}
+
+/* ===== Slide 02: crime scene cartoon + text ===== */
+.slide-02 {
+  background: #000;
+  /* No longer exempt from the default crossfade — with the real
+     two-element crossfade, exempting one side looks asymmetric
+     (this slide would pop in instantly while the outgoing slide
+     fades out under it). Slide 2's own cartoon/panel fades are
+     driven independently by onEnter's timers (200ms / 3.5s), not by
+     this wrapper's .show class, so removing this exemption doesn't
+     affect their tuned timing at all. */
+}
+
+.slide-02 .police-bg {
+  opacity: 1;
+}
+
+.slide-02 .cartoon-wrap {
+  position: absolute;
+  top: 50%;
+  left: 2.188vw;
+  transform: translateY(-50%);
+  width: 46.562vw;
+  opacity: 0;
+  transition: opacity 2.5s ease;
+}
+
+.slide-02 .cartoon-wrap.show {
+  opacity: 1;
+}
+
+.slide-02 .cartoon-img {
+  width: 100%;
+  display: block;
+  border: 2px solid #ccc;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .5);
+}
+
+.slide-02 .crime-panel {
+  position: absolute;
+  top: 50%;
+  right: 1.25vw;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, .86);
+  padding: 5.556vh 2.969vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4.444vh;
+  opacity: 0;
+  transition: opacity .5s ease;
+  /* height set by JS to match cartoon's rendered height */
+}
+
+.slide-02 .crime-panel.show {
+  opacity: 1;
+}
+
+.slide-02 .crime-line {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: 700;
+  font-size: 6.111vh;
+  line-height: 1.2;
+  color: #1a1a1a;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+
+.slide-02 .crime-line.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Slide 05: Can't Do It ===== */
+.slide-05 {
+  background: #0a0a0a;
+}
+
+.slide-05 .bg-cover {
+  object-position: 70% center;
+  filter: brightness(.55);
+}
+
+.slide-05 .cantdo-lines {
+  position: absolute;
+  left: 8.125vw;
+  top: 0;
+  width: 39.062vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3.889vh;
+  padding: 8.333vh 0;
+}
+
+.slide-05 .cline {
+  font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 7.5vh;
+  color: #fff;
+  line-height: 1.15;
+  text-shadow: 2px 2px 16px rgba(0, 0, 0, .95);
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+
+.slide-05 .cline.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-05 .sadwrap {
+  opacity: 0;
+  transition: opacity .5s ease;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.944vh;
+  width: 100%;
+}
+
+.slide-05 .sadwrap.show {
+  opacity: 1;
+}
+
+.slide-05 .sadface {
+  width: 8.438vw;
+}
+
+/* ===== Slide 06: 7 Easy Ways ===== */
+.slide-06 {
+  background: #1a1a1a;
+}
+
+.slide-06 .bg-cover {
+  filter: brightness(.9);
+}
+
+.s06-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .72);
+}
+
+.s06-band {
+  position: absolute;
+  left: 0;
+  top: 35.417vh;
+  width: 100%;
+  height: 28.889vh;
+  background: linear-gradient(100deg, #920000, #C00000);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .5);
+}
+
+.s06-seven {
+  position: absolute;
+  left: 2.344vw;
+  top: 21.528vh;
+  width: 23.438vw;
+  filter: drop-shadow(8px 8px 14px rgba(0, 0, 0, .6));
+  z-index: 3;
+}
+
+.s06-headline {
+  position: absolute;
+  left: 27.734vw;
+  top: 38.194vh;
+  width: 68.75vw;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 8.333vh;
+  line-height: 1.3;
+  color: #C5AB50;
+  -webkit-text-stroke: 1.5px #fff;
+  text-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+  z-index: 3;
+}
+
+.s06-relatively-wrap {
+  position: absolute;
+  left: 25vw;
+  top: 20.556vh;
+  z-index: 4;
+}
+
+.s06-relatively {
+  font-family: 'Caveat', cursive;
+  font-weight: 600;
+  font-size: 13.333vh;
+  color: #fff;
+  transform: rotate(-9deg);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, .5);
+  display: inline-block;
+}
+
+.s06-relatively .s06-ch {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.s06-relatively.show .s06-ch {
+  animation: s06CharIn .35s ease forwards;
+}
+
+@keyframes s06CharIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.s06-caret {
+  position: absolute;
+  left: 23.438vw;
+  top: 37.917vh;
+  font-size: 8.889vh;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, .5);
+  line-height: 1;
+  opacity: 0;
+}
+
+.s06-caret.show {
+  animation: s06CaretIn .35s ease forwards;
+}
+
+@keyframes s06CaretIn {
+  from { opacity: 0; transform: translateY(8px) scale(.6); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.s06-continue-btn {
+  position: absolute;
+  bottom: 5vh;
+  right: 3.125vw;
+  z-index: 10;
+  background: rgba(255, 255, 255, .15);
+  border: 2px solid rgba(255, 255, 255, .7);
+  color: #fff;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 3.333vh;
+  letter-spacing: 2px;
+  padding: 1.667vh 2.5vw;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background .2s;
+}
+
+.s06-continue-btn:hover {
+  background: rgba(255, 255, 255, .28);
+}
+
+/* ===== Slide 07: Know Your Audience ===== */
+.slide-07 {
+  background: #000;
+}
+
+.s07-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 2;
+}
+
+.s07-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s07-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+/* ===== Slides 08, 09: flat composed images, no extra CSS needed
+   beyond the shared .bg-cover utility class already defined above. */
+
+/* ===== Slide 10: #2 Meet Them Where They Are title card (live HTML,
+   same values as slide 7's title card) ===== */
+.slide-10 {
+  background: #222;
+}
+
+.s10-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 2;
+}
+
+.s10-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s10-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+/* ===== Slide 13: #3 One Idea title card (live HTML, same values as
+   slide 7's title card) ===== */
+.s13-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 2;
+}
+
+.s13-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s13-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+/* ===== Slide 11: Start/Stop reveal ===== */
+.slide-11 {
+  background: #fff;
+}
+
+.s11-overlay {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50vw;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+  padding: 4.444vh 2.5vw;
+}
+
+.s11-overlay.show {
+  opacity: 1;
+}
+
+.s11-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ===== Slide 12: Goldilocks bowls crossfade ===== */
+.slide-12 {
+  background: #fff;
+}
+
+.s12-bowl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.s12-bowl-1 {
+  opacity: 1;
+}
+
+.s12-bowl-2.show,
+.s12-bowl-3.show {
+  opacity: 1;
+}
+
+/* ===== Slide 21: Emphasizing Everything = Nothing (animated circles) ===== */
+.slide-21 {
+  background: #43215E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s21-pair {
+  display: flex;
+  align-items: center;
+  gap: 4.688vw;
+}
+
+.s21-circle-wrap {
+  position: relative;
+  width: 47.222vmin;
+  height: 47.222vmin;
+}
+
+.s21-circle-shape {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  opacity: 0;
+}
+
+.s21-circle-text {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  color: #43215E;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  opacity: 0;
+}
+
+.s21-circle-text .s21-small {
+  font-size: 4.444vh;
+  letter-spacing: 2px;
+}
+
+.s21-circle-text .s21-big {
+  font-size: 5.556vh;
+  letter-spacing: 1px;
+}
+
+.s21-equals {
+  display: flex;
+  flex-direction: column;
+  gap: 3.333vh;
+  opacity: 0;
+}
+
+.s21-equals span {
+  display: block;
+  width: 7.031vw;
+  height: 3.611vh;
+  background: #fff;
+  border-radius: 3px;
+}
+
+@keyframes s21FadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-21.s21-show .s21-pair > *:nth-child(1) .s21-circle-shape {
+  animation: s21FadeUp .5s ease 0s forwards;
+}
+
+.slide-21.s21-show .s21-pair > *:nth-child(1) .s21-circle-text {
+  animation: s21FadeUp .5s ease .5s forwards;
+}
+
+.slide-21.s21-show .s21-pair > *:nth-child(2) {
+  animation: s21FadeUp .5s ease 1s forwards;
+}
+
+.slide-21.s21-show .s21-pair > *:nth-child(3) .s21-circle-shape {
+  animation: s21FadeUp .5s ease 1.5s forwards;
+}
+
+.slide-21.s21-show .s21-pair > *:nth-child(3) .s21-circle-text {
+  animation: s21FadeUp .5s ease 2s forwards;
+}
+
+/* ===== Slide 29: #4 Using Animation/Effects title card (live HTML,
+   same values as slide 7's title card) ===== */
+.s29-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 2;
+}
+
+.s29-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s29-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+/* ===== Slide 30: Animation -- No! ===== */
+.slide-30 {
+  background: #000;
+}
+
+.slide-30 .s30-anim-bg,
+.slide-31 .s30-anim-bg {
+  opacity: .18;
+}
+
+.s30-film-left {
+  position: absolute;
+  left: 22.222vmin;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36.111vmin;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+
+.s30-film-left.show {
+  opacity: 1;
+}
+
+.s30-no-ring {
+  position: absolute;
+  left: 7.812vw;
+  top: -55.556vh;
+  width: 52.778vmin;
+  height: 52.778vmin;
+  border-radius: 50%;
+  border: 3.889vmin solid #e00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: top .4s cubic-bezier(.2, 1.4, .4, 1);
+}
+
+.s30-no-ring::after {
+  content: '';
+  position: absolute;
+  width: 3.333vmin;
+  height: 47.222vmin;
+  background: #e00;
+  transform: rotate(45deg);
+  border-radius: 4px;
+}
+
+.s30-no-ring.crash {
+  top: calc(50% - 26.389vh);
+}
+
+/* ===== Slide 31: Animation pile-up ===== */
+.slide-31 {
+  background: #000;
+}
+
+.s31-film-anchor {
+  position: absolute;
+  left: 22.222vmin;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36.111vmin;
+  opacity: 1;
+}
+
+.s31-no-ring {
+  position: absolute;
+  left: 7.812vw;
+  top: calc(50% - 26.389vh);
+  width: 52.778vmin;
+  height: 52.778vmin;
+  border-radius: 50%;
+  border: 3.889vmin solid #e00;
+}
+
+.s31-no-ring::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -23.611vh 0 0 -0.938vw;
+  width: 3.333vmin;
+  height: 47.222vmin;
+  background: #e00;
+  transform: rotate(45deg);
+  border-radius: 4px;
+}
+
+.s31-divider {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0.312vw;
+  height: 0;
+  background: #fff;
+  transform: translateX(-50%);
+}
+
+.s31-divider.show {
+  animation: s31DrawLine .5s ease forwards;
+}
+
+@keyframes s31DrawLine {
+  to { height: 100%; }
+}
+
+.s31-pile {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: visible;
+}
+
+.s31-pile-img {
+  position: absolute;
+  width: 15.625vw;
+  opacity: 0;
+}
+
+.s31-pile-img.show {
+  opacity: 1;
+  transition: opacity .15s ease;
+}
+
+/* ===== Slide 33: Eye / Movement / Bullet build ===== */
+.slide-33 {
+  background: #000;
+}
+
+.s33-eye-bar {
+  position: absolute;
+  bottom: 11.111vh;
+  right: 0;
+  width: 60%;
+  background: rgba(80, 80, 80, .72);
+  padding: 2.5vh 1.5vw;
+  transform: translateX(100%);
+  transition: transform .6s cubic-bezier(.2, .8, .2, 1);
+  z-index: 1;
+}
+
+.s33-eye-bar.show {
+  transform: translateX(0);
+}
+
+.s33-eye-bar-text {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: bold;
+  font-size: 5.6vh;
+  color: #fff;
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.s33-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .9);
+  z-index: 2;
+  opacity: 0;
+  transition: opacity .6s ease;
+  pointer-events: none;
+}
+
+.s33-dark-overlay.show {
+  opacity: 1;
+}
+
+.s33-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36%;
+  height: 100%;
+  background: #321547;
+  display: flex;
+  align-items: center;
+  padding: 0 3.438vw;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+.s33-panel.show {
+  opacity: 1;
+}
+
+.s33-panel p {
+  font-size: 6.389vh;
+  line-height: 1.35;
+  color: #fff;
+}
+
+.s33-panel p u {
+  text-decoration: underline;
+}
+
+.s33-bullets {
+  position: absolute;
+  left: 38%;
+  top: 0;
+  width: 59%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5.556vh;
+  padding: 0 2.5vw;
+  z-index: 3;
+}
+
+.s33-bullet {
+  font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 7vh;
+  color: #FFFF00;
+  opacity: 0;
+  transform: translateY(2.778vh);
+  transition: opacity .6s ease, transform .6s ease, color .6s ease;
+  display: flex;
+  gap: 1.25vw;
+  align-items: flex-start;
+}
+
+.s33-bullet::before {
+  content: '•';
+  flex-shrink: 0;
+}
+
+.s33-bullet.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.s33-bullet.dimmed {
+  color: #444;
+}
+
+/* ===== Slides 37/38: chaos sequence ===== */
+.slide-37,
+.slide-38 {
+  background: #000;
+  overflow: hidden;
+}
+
+.s37-chaos-canvas {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.s37-stop-btn {
+  position: absolute;
+  bottom: 11.111vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: #e00;
+  color: #fff;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 5vh;
+  letter-spacing: 3px;
+  padding: 2.5vh 4.688vw;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+
+.s37-stop-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== Slide 39: Thank You ===== */
+.slide-39 {
+  background: #000;
+}
+
+/* ===== Slide 40: #5 Using Images and Colors title card (live HTML,
+   same values as slide 7's title card) ===== */
+.s40-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 2;
+}
+
+.s40-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s40-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+/* ===== Slide 42: Niagara Falls with callouts ===== */
+.slide-42 {
+  background: #000;
+}
+
+.s42-callout {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(1.389vh);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.s42-callout.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.s42-callout-1 {
+  left: 3.125vw;
+  bottom: 16.667vh;
+}
+
+.s42-callout-2 {
+  left: 37.5vw;
+  top: 8.333vh;
+}
+
+.s42-callout-3 {
+  right: 3.906vw;
+  top: 33.333vh;
+}
+
+.s42-callout-box {
+  background: rgba(0, 0, 0, .72);
+  color: #fff;
+  font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 3.056vh;
+  line-height: 1.4;
+  padding: 1.389vh 1.25vw;
+  border-radius: 4px;
+  border-left: 4px solid #FFD700;
+  max-width: 25vw;
+}
+
+.s42-ruler-wrap {
+  position: absolute;
+  right: 29.688vw;
+  top: 30.556vh;
+  display: flex;
+  align-items: flex-start;
+  gap: .781vw;
+  opacity: 0;
+  transform: translateY(1.389vh);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.s42-ruler-wrap.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.s42-ruler-svg {
+  width: 4.688vw;
+}
+
+/* ===== Slide 43: Show Don't Tell ===== */
+.slide-43 {
+  background: #00BCD4;
+}
+
+.s43-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .18;
+}
+
+.s43-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.s43-line-1 {
+  font-family: 'Anton', sans-serif;
+  font-size: 47.222vh;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -4px;
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, .2);
+  opacity: 0;
+  transform: scale(1.1);
+  transition: none;
+}
+
+.s43-line-2 {
+  font-family: 'Anton', sans-serif;
+  font-size: 26.389vh;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-shadow: 4px 4px 16px rgba(0, 0, 0, .2);
+  opacity: 0;
+  transform: scale(1.1);
+  transition: none;
+}
+
+.s43-line-1.show,
+.s43-line-2.show {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity .05s ease, transform .08s cubic-bezier(.2, 1.4, .4, 1);
+}
+
+/* ===== Slide 49: Mary's PowerPoint (renumbered from 45) ===== */
+.slide-49 {
+  background: #000;
+}
+
+.s49-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.s49-text {
+  position: absolute;
+  left: -1.172vw;
+  top: 0;
+  width: calc(40% - 2.344vw);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8.333vh 3.438vw;
+  z-index: 2;
+}
+
+.s49-para {
+  font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 4.167vh;
+  line-height: 1.45;
+  color: #222;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(2.778vh);
+  transition: opacity .7s ease, transform .7s ease;
+}
+
+.s49-para.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Slide 48: #6 Using Humor title card (renumbered from 44;
+   live HTML, same values as every other #N title card) ===== */
+.s48-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 2;
+}
+
+.s48-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s48-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+/* ===== Slide 53: "Predictability Equals Security... BUT it can
+   also equal death." Single slide, pink->black timed sequence. ===== */
+.slide-53 {
+  background: #000;
+  overflow: hidden;
+}
+
+.s53-bg {
+  position: absolute;
+  inset: 0;
+  background: #EC008C;
+  transition: background 2.5s ease;
+}
+
+.s53-bg.black {
+  background: #000;
+}
+
+.s53-title {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 6.5vh;
+  letter-spacing: 1px;
+  color: #fff;
+  z-index: 2;
+}
+
+.s53-but {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 25.476vw;
+  height: auto;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: none;
+  z-index: 2;
+}
+
+.s53-but.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: transform .5s cubic-bezier(.2, 1.6, .3, 1), opacity .3s ease;
+}
+
+.s53-death-row {
+  position: absolute;
+  top: 78%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 1.5vw;
+  z-index: 2;
+}
+
+.s53-death-row.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: transform .6s cubic-bezier(.2, 1.4, .3, 1), opacity .5s ease;
+}
+
+.s53-death-text {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 6.5vh;
+  letter-spacing: 1px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.s53-skull {
+  width: 5.556vw;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* ===== Slide 61: final contact slide, End Presentation button +
+   full fade-to-black close ===== */
+.s61-end-btn {
+  position: absolute;
+  top: 3vh;
+  right: 3vw;
+  z-index: 10;
+  background: rgba(20, 20, 20, .78);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .4);
+  border-radius: 4px;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 1.8vh;
+  letter-spacing: .5px;
+  padding: 1vh 1.6vw;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease;
+}
+
+.s61-end-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.s61-end-btn:hover {
+  background: rgba(40, 40, 40, .9);
+}
+
+/* "Take the Quiz!" sits directly under End Presentation, same visual
+   treatment but slightly less emphasis (no border) since it's the
+   secondary/optional path. Appears at the same moment as End
+   Presentation (after VO ends) for visual consistency — both options
+   presented together rather than staggered. Flag for Dave: if he'd
+   rather this be available immediately on slide entry instead of
+   waiting for VO end, that's a one-line change (move .add('show')
+   into onEnter instead of the VO-end callback). */
+.s61-quiz-btn {
+  position: absolute;
+  top: calc(3vh + 1.8vh + 2vh + 1.6vh);
+  right: 3vw;
+  z-index: 10;
+  background: rgba(20, 20, 20, .78);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 1.8vh;
+  letter-spacing: .5px;
+  padding: 1vh 1.6vw;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.s61-quiz-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.s61-quiz-btn:hover {
+  background: rgba(40, 40, 40, .9);
+}
+
+.s61-fadeout {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 2s ease;
+  z-index: 20;
+}
+
+.s61-fadeout.show {
+  opacity: 1;
+}
+
+/* Invisible clickable zones over the email/phone text baked into
+   bg-61-contact.png. Positions are approximate based on the image's
+   visual layout — flag for Dave to confirm/adjust against the real
+   rendered slide. */
+.s61-hotspot {
+  position: absolute;
+  display: block;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.s61-hotspot-email {
+  left: 20%;
+  top: 71%;
+  width: 46%;
+  height: 7%;
+}
+
+.s61-hotspot-phone {
+  left: 20%;
+  top: 84%;
+  width: 20%;
+  height: 7%;
+}
+
+/* ===== Slide 52: "#19 Do The Unexpected" — title card (Anton, same
+   template as 7/10/13/29/40/48) over plain black, with a fast
+   monkey pop-up triggered by a hard VO interrupt at 5.6s. ===== */
+.slide-52 {
+  background: #000;
+}
+
+.s52-title-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15.278vh;
+  display: flex;
+  z-index: 5;
+}
+
+.s52-badge {
+  width: 11.094vw;
+  height: 100%;
+  background: #043476;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 8.611vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s52-title {
+  flex: 1;
+  background: rgba(10, 10, 40, .72);
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 6.667vh;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.563vw;
+}
+
+.s52-monkey {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  height: auto;
+  transform: translate(-50%, 100%) scale(.92);
+  opacity: 0;
+  z-index: 3;
+  transition: none;
+}
+
+.s52-monkey.show {
+  transform: translate(-50%, 0) scale(1.04);
+  opacity: 1;
+  transition: transform .09s cubic-bezier(.3, 1.8, .4, 1), opacity .06s ease;
+}
+
+.s52-monkey.settle {
+  transform: translate(-50%, 0) scale(1);
+  transition: transform .12s ease-out;
+}
+
+/* ===== Slide 58: "7 Easy Ways" title -> dark overlay + numbered
+   list. List item timing is placeholder (flat 1s float-in), revisit
+   once vo-58b is finalized. ===== */
+.s58-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .82);
+  opacity: 0;
+  transition: opacity .6s ease;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.s58-overlay.show {
+  opacity: 1;
+}
+
+.s58-list {
+  list-style: none;
+  padding: 0 0 0 8vw;
+  margin: 0;
+}
+
+.s58-item {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 4.6vh;
+  color: #fff;
+  margin-bottom: 1.4vh;
+  opacity: 0;
+  transform: translateY(1.5vh);
+  transition: opacity .5s ease, transform .5s ease;
+}
+
+.s58-item.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.s58-item .s58-num {
+  font-weight: bold;
+  margin-right: .3em;
+}
+
+/* ===== Slide 59: "That's THE END" — live text over cropped clean
+   background. "That's" is a deliberate Georgia-serif exception to
+   the deck font rule (confirmed with Dave); "THE END" stays
+   Helvetica/Arial per standard. ===== */
+.s59-thats {
+  position: absolute;
+  left: 35%;
+  top: 10.5%;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  font-size: 8.2vh;
+  color: #1a1a1a;
+  text-shadow: 2px 3px 6px rgba(0, 0, 0, .25);
+  opacity: 0;
+  transform: translateY(-1.2vh);
+  transition: opacity .5s ease, transform .5s ease;
+  z-index: 2;
+}
+
+.s59-thats.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.s59-theend {
+  position: absolute;
+  left: 50%;
+  top: 33%;
+  width: 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  opacity: 0;
+  transform: scale(.85);
+  transition: opacity .5s ease, transform .5s cubic-bezier(.2, 1.4, .3, 1);
+  z-index: 2;
+}
+
+.s59-theend.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.s59-the {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: bold;
+  font-size: 7vh;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 2px 3px 6px rgba(0, 0, 0, .25);
+}
+
+.s59-end {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: bold;
+  font-size: 12.5vh;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 2px 3px 8px rgba(0, 0, 0, .25);
+}
+
+/* ===== Slide 54: Airplane meme, black reveal rectangle ===== */
+/* ===== Slide 54: Airplane meme, black reveal rectangle. Width
+   precisely measured against bg-54-airplane.png's actual black/photo
+   boundary (consistently ~44.10% from left across 40+ scanned rows),
+   so the rectangle's left edge lines up exactly with where the photo
+   starts — not an eyeballed guess. ===== */
+.s54-reveal-rect {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55.9%;
+  height: 100%;
+  background: #040404;
+  opacity: 1;
+  transition: opacity 1s ease;
+  z-index: 2;
+}
+
+.s54-reveal-rect.hide {
+  opacity: 0;
+}

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>7 (relatively) Easy Ways to Avoid Death by PowerPoint — Quiz!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background: #000;
+    overflow: hidden;
+  }
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity .6s ease;
+  }
+  .screen.active {
+    display: flex;
+    opacity: 1;
+  }
+  .bg-dimmed {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/bg-58-sevenways-title.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .bg-dimmed::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.95);
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    width: 80%;
+    max-width: 1100px;
+    text-align: center;
+    color: #fff;
+  }
+
+  /* Intro screen */
+  .quiz-title {
+    font-family: 'Anton', 'Helvetica', 'Arial', sans-serif;
+    font-size: 4.2vw;
+    line-height: 1.15;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0,0,0,.5);
+    margin-bottom: 2.5vh;
+  }
+  .quiz-sub {
+    font-size: 1.4vw;
+    color: #ddd;
+    margin-bottom: 4vh;
+  }
+  .btn {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 1.3vw;
+    color: #fff;
+    background: #043476;
+    border: none;
+    border-radius: 6px;
+    padding: 1.4vh 2.6vw;
+    cursor: pointer;
+    transition: background .2s ease, transform .15s ease;
+  }
+  .btn:hover { background: #06509e; transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  .btn-secondary {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.4);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,.22); }
+
+  #start-quiz-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .6s ease;
+  }
+  #start-quiz-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Question screens */
+  .q-number {
+    font-size: 1.1vw;
+    letter-spacing: 2px;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-bottom: 1.5vh;
+  }
+  .q-text {
+    font-size: 2.4vw;
+    font-weight: bold;
+    margin-bottom: 4vh;
+  }
+  .q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4vh;
+    align-items: center;
+  }
+  .q-option {
+    width: 60%;
+    font-size: 1.3vw;
+    color: #fff;
+    background: rgba(255,255,255,.08);
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 8px;
+    padding: 1.6vh 1.5vw;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .q-option:hover {
+    background: rgba(255,255,255,.18);
+    border-color: rgba(255,255,255,.6);
+  }
+  .q-option.correct {
+    background: rgba(60,180,90,.35);
+    border-color: #3cb45a;
+  }
+  .q-option.wrong {
+    background: rgba(200,50,50,.35);
+    border-color: #c83232;
+  }
+  .q-feedback {
+    margin-top: 3vh;
+    font-size: 1.3vw;
+    min-height: 3vh;
+    color: #ffd166;
+  }
+  .skip-btn {
+    margin-top: 2.5vh;
+    display: none;
+  }
+  .skip-btn.show { display: inline-block; }
+
+  /* Drag and drop */
+  .dnd-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    width: 70%;
+    margin: 0 auto;
+  }
+  .dnd-item {
+    background: rgba(255,255,255,.1);
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 8px;
+    padding: 1.2vh 1.5vw;
+    font-size: 1.2vw;
+    color: #fff;
+    cursor: grab;
+    user-select: none;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .dnd-item:active { cursor: grabbing; }
+  .dnd-item.dragging { opacity: .4; }
+  .dnd-item.drag-over { border-color: #ffd166; }
+  .dnd-check-row {
+    margin-top: 3vh;
+  }
+
+  /* Score screen */
+  .score-headline {
+    font-family: 'Anton', 'Helvetica', 'Arial', sans-serif;
+    font-size: 3.2vw;
+    margin-bottom: 2vh;
+  }
+  .score-tier {
+    display: inline-block;
+    font-size: 2.6vw;
+    font-weight: bold;
+    color: #ffd166;
+    text-shadow: 0 0 12px rgba(255, 209, 102, .9), 0 0 24px rgba(255, 209, 102, .6);
+    background: rgba(255, 209, 102, .08);
+    border: 2px solid rgba(255, 209, 102, .6);
+    border-radius: 10px;
+    padding: 1.6vh 2vw;
+    margin-bottom: 2.5vh;
+    box-shadow: 0 0 20px rgba(255, 209, 102, .5), 0 0 45px rgba(255, 209, 102, .3);
+    opacity: 0;
+    transform: scale(.4);
+    transition: opacity .5s ease, transform .5s cubic-bezier(.2, 1.6, .3, 1);
+  }
+  .score-tier.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .score-detail {
+    font-size: 1.1vw;
+    color: #aaa;
+    margin-bottom: .8vh;
+  }
+  .score-footnote {
+    font-size: .8vw;
+    font-style: italic;
+    color: #777;
+    margin-bottom: 4vh;
+  }
+
+  #end-quiz-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .6s ease;
+  }
+  #end-quiz-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .fadeout {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+    z-index: 50;
+  }
+  .fadeout.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="fadeout" id="fadeout"></div>
+
+<!-- Click-to-begin gate: browsers block audio autoplay before any
+     user interaction, so the intro VO can't reliably start on its
+     own on page load. One click here satisfies that requirement,
+     then immediately proceeds into the real intro screen/VO. -->
+<div class="screen active" id="screen-gate">
+  <div class="bg-dimmed"></div>
+  <div class="content">
+    <div class="quiz-title">7 (relatively) EASY WAYS TO AVOID<br>DEATH BY POWERPOINT QUIZ!</div>
+    <button class="btn" id="gate-btn">Click to Begin</button>
+  </div>
+</div>
+
+<!-- ===================== INTRO SCREEN ===================== -->
+<div class="screen" id="screen-intro">
+  <div class="bg-dimmed"></div>
+  <div class="content">
+    <div class="quiz-title">7 (relatively) EASY WAYS TO AVOID<br>DEATH BY POWERPOINT QUIZ!</div>
+    <div class="quiz-sub">Let's see what stuck.</div>
+    <button class="btn" id="start-quiz-btn">Start Quiz</button>
+  </div>
+</div>
+
+<!-- ===================== Q1: MULTIPLE CHOICE ===================== -->
+<div class="screen" id="screen-q1">
+  <div class="bg-dimmed"></div>
+  <div class="content">
+    <div class="q-number">Question 1 of 3</div>
+    <div class="q-text">How many (relatively) easy ways to avoid death by PowerPoint were shown in the presentation?</div>
+    <div class="q-options" id="q1-options">
+      <div class="q-option" data-correct="false">1</div>
+      <div class="q-option" data-correct="false">3</div>
+      <div class="q-option" data-correct="true">7</div>
+      <div class="q-option" data-correct="true" data-bonus="true">19</div>
+    </div>
+    <div class="q-feedback" id="q1-feedback"></div>
+    <button class="btn btn-secondary skip-btn" id="q1-skip-btn">Skip this question</button>
+  </div>
+</div>
+
+<!-- ===================== Q2: DRAG AND DROP ===================== -->
+<div class="screen" id="screen-q2">
+  <div class="bg-dimmed"></div>
+  <div class="content">
+    <div class="q-number">Question 2 of 3</div>
+    <div class="q-text">Drag the ways into their correct order.</div>
+    <div class="dnd-list" id="dnd-list">
+      <!-- populated by JS, shuffled -->
+    </div>
+    <div class="dnd-check-row">
+      <button class="btn" id="dnd-check-btn">Check Order</button>
+    </div>
+    <div class="q-feedback" id="q2-feedback"></div>
+    <button class="btn btn-secondary skip-btn" id="q2-skip-btn">Skip this question</button>
+  </div>
+</div>
+
+<!-- ===================== Q3: MULTIPLE CHOICE ===================== -->
+<div class="screen" id="screen-q3">
+  <div class="bg-dimmed"></div>
+  <div class="content">
+    <div class="q-number">Question 3 of 3</div>
+    <div class="q-text">Who designed this presentation?</div>
+    <div class="q-options" id="q3-options">
+      <!-- populated by JS, shuffled -->
+    </div>
+    <div class="q-feedback" id="q3-feedback"></div>
+    <button class="btn btn-secondary skip-btn" id="q3-skip-btn">Skip this question</button>
+  </div>
+</div>
+
+<!-- ===================== SCORE SCREEN ===================== -->
+<div class="screen" id="screen-score">
+  <div class="bg-dimmed"></div>
+  <div class="content">
+    <div class="score-headline">Congratulations! You finished the quiz!</div>
+    <div class="score-tier" id="score-tier"></div>
+    <div class="score-detail" id="score-detail"></div>
+    <div class="score-footnote">*Score not accurate, and not indicative of user ability or coolness.</div>
+    <button class="btn" id="end-quiz-btn">Exit</button>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   QUIZ LOGIC
+   Standalone page, no dependency on the main deck's engines.
+
+   VO STATUS: All audio now wired in.
+     - intro: plays on load; "Start Quiz" button stays hidden until
+       it finishes, then fades in (button is still the actual
+       advance trigger, just gated behind the VO)
+     - correctPool / wrongPool: 3 files each, ONE chosen at RANDOM
+       per correct/wrong event, reused across all 3 questions
+       (Dave: "you don't have to use them in order... randomize")
+     - skip: plays when a "Skip this question" button is used
+     - congratulations: plays on score screen entry; "End
+       Presentation" stays hidden until it finishes, then fades in
+       at the SAME MOMENT the closing music swells to full volume
+     - closingMusic (quiz-music.mp3, same track as the deck's slide
+       59/61 music-closing.mp3): starts on page load at 0.34 (same
+       entry level as in the main deck), loops quietly under the
+       whole quiz, then swells to 1.0 over 2s exactly when the End
+       Presentation button appears — NOT earlier, NOT gradually
+       across the whole quiz. (No VO planned for reading the
+       questions aloud — confirmed.)
+
+   SCORING: tracked for fun/flavor only (Dave: "doesn't matter").
+   Bonus points for picking 19 on Q1. The tiered message on the score
+   screen is selected RANDOMLY, independent of actual score, per
+   Dave's explicit request ("even funnier" that way) — this is
+   intentional, not a bug.
+   ===================================================================== */
+
+// ---- VO placeholder system ----
+// Real files now wired in. Correct/wrong responses are POOLS — a
+// random one plays each time, per Dave's instruction ("you don't
+// have to use them in order... randomize").
+const VO = {
+  intro: "assets/quiz-intro.mp3",
+  correctPool: [
+    "assets/quiz-correct-1.mp3",
+    "assets/quiz-correct-2.mp3",
+    "assets/quiz-correct-3.mp3"
+  ],
+  wrongPool: [
+    "assets/quiz-wrong-1.mp3",
+    "assets/quiz-wrong-2.mp3",
+    "assets/quiz-wrong-3.mp3"
+  ],
+  skip: "assets/quiz-skip.mp3",
+  congratulations: "assets/quiz-congratulations.mp3",
+  closingMusic: "assets/quiz-music.mp3"
+};
+
+function randomFrom(pool) {
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+let voPlayer = new Audio();
+function playVO(src, onEnd) {
+  if (!src) {
+    // Silent placeholder — fire the callback immediately so flow
+    // isn't blocked waiting on a file that doesn't exist yet.
+    if (onEnd) onEnd();
+    return;
+  }
+  voPlayer.pause();
+  voPlayer.onended = null;
+  voPlayer = new Audio(src);
+  voPlayer.onended = () => { if (onEnd) onEnd(); };
+  voPlayer.play().catch(() => { if (onEnd) onEnd(); });
+}
+
+let musicPlayer = new Audio();
+function playMusic(src, startVolume = 0.34) {
+  if (!src) return;
+  musicPlayer.pause();
+  musicPlayer = new Audio(src);
+  musicPlayer.loop = true;
+  musicPlayer.volume = startVolume;
+  musicPlayer.play().catch(() => {});
+}
+
+function fadeMusicTo(targetVolume, durationMs) {
+  const player = musicPlayer;
+  const startVolume = player.volume;
+  const steps = 20;
+  const stepMs = durationMs / steps;
+  let step = 0;
+  const interval = setInterval(() => {
+    step++;
+    const progress = step / steps;
+    player.volume = startVolume + (targetVolume - startVolume) * progress;
+    if (step >= steps) {
+      clearInterval(interval);
+      player.volume = targetVolume;
+    }
+  }, stepMs);
+}
+
+// ---- Screen management ----
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ---- Score tracking ----
+let score = 0;
+let maxScore = 3; // for display purposes only — doesn't gate anything
+
+// ---- Wrong-attempt tracking per question (3 strikes -> skip button) ----
+const wrongAttempts = { q1: 0, q2: 0, q3: 0 };
+const WRONG_LIMIT = 3;
+
+function registerWrongAttempt(qKey, skipBtnEl) {
+  wrongAttempts[qKey]++;
+  if (wrongAttempts[qKey] >= WRONG_LIMIT) {
+    skipBtnEl.classList.add('show');
+  }
+}
+
+// ===================== INTRO =====================
+// Browsers block audio autoplay before any user gesture, so the
+// intro VO (and music) can't reliably fire on page load alone. The
+// click-to-begin gate provides that required gesture; once clicked,
+// we move to the real intro screen and start audio there, which is
+// allowed since it's now inside a user-initiated event handler.
+const startQuizBtn = document.getElementById('start-quiz-btn');
+const gateBtn = document.getElementById('gate-btn');
+
+startQuizBtn.addEventListener('click', () => {
+  showScreen('screen-q1');
+});
+
+gateBtn.addEventListener('click', () => {
+  showScreen('screen-intro');
+  playMusic(VO.closingMusic, 0.34);
+  playVO(VO.intro, () => {
+    startQuizBtn.classList.add('show');
+  });
+});
+
+// ===================== Q1: MULTIPLE CHOICE =====================
+const q1Options = document.querySelectorAll('#q1-options .q-option');
+const q1Feedback = document.getElementById('q1-feedback');
+const q1SkipBtn = document.getElementById('q1-skip-btn');
+let q1Answered = false;
+
+q1Options.forEach(opt => {
+  opt.addEventListener('click', () => {
+    if (q1Answered) return;
+    const isCorrect = opt.dataset.correct === "true";
+    const isBonus = opt.dataset.bonus === "true";
+
+    if (isCorrect) {
+      q1Answered = true;
+      opt.classList.add('correct');
+      score += isBonus ? 2 : 1; // bonus point for picking 19
+      q1Feedback.textContent = isBonus
+        ? "Correct — and bonus points for knowing it's secretly #19!"
+        : "Correct!";
+      playVO(randomFrom(VO.correctPool), () => {
+        showScreen('screen-q2');
+        renderDndList();
+      });
+    } else {
+      opt.classList.add('wrong');
+      q1Feedback.textContent = "Not quite — try again.";
+      playVO(randomFrom(VO.wrongPool));
+      registerWrongAttempt('q1', q1SkipBtn);
+      setTimeout(() => opt.classList.remove('wrong'), 700);
+    }
+  });
+});
+
+q1SkipBtn.addEventListener('click', () => {
+  playVO(VO.skip);
+  showScreen('screen-q2');
+  renderDndList();
+});
+
+// ===================== Q2: DRAG AND DROP =====================
+const correctOrder = [
+  "1. Know Your Audience",
+  "2. Meet Them Where They Are",
+  "3. One Idea on a Slide",
+  "4. Use Animation and Effects (Wisely)",
+  "5. Use Images and Colors",
+  "6. Use Humor",
+  "19. Do The Unexpected"
+];
+
+const dndListEl = document.getElementById('dnd-list');
+const q2Feedback = document.getElementById('q2-feedback');
+const q2SkipBtn = document.getElementById('q2-skip-btn');
+let dndRendered = false;
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderDndList() {
+  if (dndRendered) return; // only shuffle/build once per quiz session
+  dndRendered = true;
+  const shuffled = shuffle(correctOrder);
+  dndListEl.innerHTML = '';
+  shuffled.forEach(text => {
+    const item = document.createElement('div');
+    item.className = 'dnd-item';
+    item.draggable = true;
+    item.textContent = text;
+    dndListEl.appendChild(item);
+  });
+  attachDndHandlers();
+}
+
+function attachDndHandlers() {
+  let draggedEl = null;
+
+  dndListEl.querySelectorAll('.dnd-item').forEach(item => {
+    item.addEventListener('dragstart', () => {
+      draggedEl = item;
+      item.classList.add('dragging');
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      dndListEl.querySelectorAll('.dnd-item').forEach(i => i.classList.remove('drag-over'));
+    });
+    item.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (item !== draggedEl) item.classList.add('drag-over');
+    });
+    item.addEventListener('dragleave', () => {
+      item.classList.remove('drag-over');
+    });
+    item.addEventListener('drop', (e) => {
+      e.preventDefault();
+      item.classList.remove('drag-over');
+      if (item === draggedEl) return;
+      const items = Array.from(dndListEl.children);
+      const draggedIdx = items.indexOf(draggedEl);
+      const targetIdx = items.indexOf(item);
+      if (draggedIdx < targetIdx) {
+        item.after(draggedEl);
+      } else {
+        item.before(draggedEl);
+      }
+    });
+  });
+}
+
+document.getElementById('dnd-check-btn').addEventListener('click', () => {
+  const currentOrder = Array.from(dndListEl.children).map(el => el.textContent);
+  const isCorrect = currentOrder.every((text, i) => text === correctOrder[i]);
+
+  if (isCorrect) {
+    q2Feedback.textContent = "Correct order!";
+    score += 1;
+    playVO(randomFrom(VO.correctPool), () => {
+      showScreen('screen-q3');
+      renderQ3();
+    });
+  } else {
+    q2Feedback.textContent = "Not quite the right order — try again.";
+    playVO(randomFrom(VO.wrongPool));
+    registerWrongAttempt('q2', q2SkipBtn);
+  }
+});
+
+q2SkipBtn.addEventListener('click', () => {
+  playVO(VO.skip);
+  showScreen('screen-q3');
+  renderQ3();
+});
+
+// ===================== Q3: MULTIPLE CHOICE =====================
+const q3Names = shuffle(["Abraham Lincoln", "George Washington", "Theodore Roosevelt", "David M. Graham"]);
+const q3Options = document.getElementById('q3-options');
+const q3Feedback = document.getElementById('q3-feedback');
+const q3SkipBtn = document.getElementById('q3-skip-btn');
+let q3Answered = false;
+let q3Rendered = false;
+
+function renderQ3() {
+  if (q3Rendered) return;
+  q3Rendered = true;
+  q3Names.forEach(name => {
+    const opt = document.createElement('div');
+    opt.className = 'q-option';
+    opt.textContent = name;
+    opt.dataset.correct = (name === "David M. Graham") ? "true" : "false";
+    opt.addEventListener('click', () => {
+      if (q3Answered) return;
+      const isCorrect = opt.dataset.correct === "true";
+      if (isCorrect) {
+        q3Answered = true;
+        opt.classList.add('correct');
+        score += 1;
+        q3Feedback.textContent = "Correct!";
+        playVO(randomFrom(VO.correctPool), () => {
+          showScreen('screen-score');
+          renderScore();
+          playVO(VO.congratulations, () => {
+            document.getElementById('end-quiz-btn').classList.add('show');
+            fadeMusicTo(1.0, 2000);
+          });
+        });
+      } else {
+        opt.classList.add('wrong');
+        q3Feedback.textContent = "Nope — try again.";
+        playVO(randomFrom(VO.wrongPool));
+        registerWrongAttempt('q3', q3SkipBtn);
+        setTimeout(() => opt.classList.remove('wrong'), 700);
+      }
+    });
+    q3Options.appendChild(opt);
+  });
+}
+
+q3SkipBtn.addEventListener('click', () => {
+  playVO(VO.skip);
+  showScreen('screen-score');
+  renderScore();
+  playVO(VO.congratulations, () => {
+    document.getElementById('end-quiz-btn').classList.add('show');
+    fadeMusicTo(1.0, 2000);
+  });
+});
+
+// ===================== SCORE SCREEN =====================
+// Tiered message selected RANDOMLY per Dave's instruction — not tied
+// to actual score. Real score still shown below for flavor.
+const tierMessages = [
+  "So even this presentation caused another death.",
+  "You're completely average. Way to go!",
+  "You're just showing off, aren't you?"
+];
+
+function renderScore() {
+  const tier = tierMessages[Math.floor(Math.random() * tierMessages.length)];
+  const tierEl = document.getElementById('score-tier');
+  tierEl.textContent = tier;
+  tierEl.classList.remove('show'); // reset in case score screen is somehow re-rendered
+  void tierEl.offsetWidth; // force reflow so the transition replays
+  setTimeout(() => tierEl.classList.add('show'), 100);
+  document.getElementById('score-detail').textContent = `Score: ${score} point${score === 1 ? '' : 's'} (out of a totally made-up scale)*`;
+}
+
+// ===================== END PRESENTATION =====================
+document.getElementById('end-quiz-btn').addEventListener('click', () => {
+  const fadeout = document.getElementById('fadeout');
+  fadeout.classList.add('show');
+
+  // Fade audio out over the same 2s
+  const fadeSteps = 20;
+  const fadeMs = 2000;
+  let step = 0;
+  const voStart = voPlayer.volume;
+  const musicStart = musicPlayer.volume;
+  const interval = setInterval(() => {
+    step++;
+    const progress = step / fadeSteps;
+    voPlayer.volume = Math.max(0, voStart * (1 - progress));
+    musicPlayer.volume = Math.max(0, musicStart * (1 - progress));
+    if (step >= fadeSteps) {
+      clearInterval(interval);
+      voPlayer.pause();
+      musicPlayer.pause();
+      // Return to the portfolio landing page after the fade completes.
+      // Path assumes quiz lives at portfolio/presentations/dbp-quiz/
+      window.location.href = '../../index.html';
+    }
+  }, fadeMs / fadeSteps);
+});
+</script>
+</body>
+</html>
