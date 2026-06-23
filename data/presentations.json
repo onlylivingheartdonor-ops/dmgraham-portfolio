@@ -5,5 +5,12 @@
     "icon": "icons/dbp.png",
     "url": "presentations/dbp-build/index.html",
     "label": "INTERACTIVE PRESENTATION"
+  },
+  {
+    "title": "How To Make A Pizza",
+    "description": "An interactive HTML5 training presentation on pizza-making — animated bullet reveals, a data table, and a three-question review quiz.",
+    "icon": "icons/pizza.png",
+    "url": "presentations/pizza/index.html",
+    "label": "INTERACTIVE TRAINING"
   }
 ]
