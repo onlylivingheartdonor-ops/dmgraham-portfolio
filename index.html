@@ -190,25 +190,48 @@ body::before {
 <!-- ═══ HERO ═══ -->
 <section id="hero" class="min-h-screen flex flex-col justify-center pt-16 pb-24 px-6">
   <div class="max-w-6xl mx-auto w-full">
-    <div class="max-w-3xl">
-      <p class="reveal text-zinc-500 text-sm font-medium tracking-widest uppercase mb-6">
-        Content Architect &nbsp;·&nbsp; Instructional Designer
-      </p>
-      <h1 class="reveal d1 font-display text-5xl md:text-7xl leading-[1.08] tracking-tight text-cream mb-8">
-        Making complex ideas<br>
-        impossible to ignore.
-      </h1>
-      <p class="reveal d2 text-zinc-400 text-lg leading-relaxed max-w-xl mb-10">
-        I design and build digital learning experiences — interactive presentations, eLearning modules, and web-based training — that earn attention and stick with audiences.
-      </p>
-      <div class="reveal d3 flex flex-wrap gap-4">
-        <a href="#presentations" class="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm">
-          View my work →
-        </a>
-        <a href="about.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium border border-zinc-700 text-zinc-300 hover:border-gold hover:text-cream transition-colors">
-          About me
-        </a>
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-16">
+
+      <!-- text -->
+      <div class="max-w-xl">
+        <p class="reveal text-zinc-500 text-sm font-medium tracking-widest uppercase mb-6">
+          Content Architect &nbsp;·&nbsp; Instructional Designer
+        </p>
+        <h1 class="reveal d1 font-display text-5xl md:text-7xl leading-[1.08] tracking-tight text-cream mb-8">
+          Making complex ideas<br>
+          impossible to ignore.
+        </h1>
+        <p class="reveal d2 text-zinc-400 text-lg leading-relaxed mb-10">
+          I design and build digital learning experiences — interactive presentations, eLearning modules, and web-based training — that earn attention and stick with audiences.
+        </p>
+        <div class="reveal d3 flex flex-wrap gap-4">
+          <a href="#presentations" class="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm">
+            View my work →
+          </a>
+          <a href="about.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium border border-zinc-700 text-zinc-300 hover:border-gold hover:text-cream transition-colors">
+            About me
+          </a>
+        </div>
       </div>
+
+      <!-- portrait -->
+      <div class="reveal d2 flex-shrink-0 flex justify-center lg:justify-end">
+        <div class="relative">
+          <!-- gold ring -->
+          <div class="absolute inset-0 rounded-full border-2 border-gold/30 scale-110"></div>
+          <!-- subtle glow -->
+          <div class="absolute inset-0 rounded-full bg-gold/5 scale-110 blur-xl"></div>
+          <!-- photo -->
+          <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-gold/20">
+            <img
+              src="images/portrait.png"
+              alt="David M. Graham"
+              class="w-full h-full object-cover object-top"
+              onerror="this.parentElement.style.background='#141420'">
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- decorative gold rule -->
