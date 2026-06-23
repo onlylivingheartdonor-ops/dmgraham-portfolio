@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How To Make A Pizza</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #000;
+  font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Slide stage ─────────────────────────────────────────── */
+#stage {
+  position: relative;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 */
+  max-height: 100vh;
+  max-width: 177.78vh;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+
+/* ── Slide layers ─────────────────────────────────────────── */
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  transition: opacity .5s ease;
+  pointer-events: none;
+}
+.slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 2;
+}
+.slide.outgoing {
+  opacity: 0;
+  z-index: 1;
+}
+
+.slide-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Animated content layer ───────────────────────────────── */
+.slide-content {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+}
+
+/* ── Bullet animation: float in yellow → dim to white ──────── */
+.bullet {
+  opacity: 0;
+  transform: translateY(12px);
+  color: #FFE000;
+  transition: none;
+}
+.bullet.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .45s ease, transform .45s ease;
+}
+.bullet.dim {
+  color: #ffffff;
+  transition: color .5s ease;
+}
+
+/* ── Section reveal ───────────────────────────────────────── */
+.section-block {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: none;
+}
+.section-block.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+/* ── Wheel animation (radial wipe from center) ─────────────── */
+@keyframes wheel-in {
+  0%   { clip-path: inset(0 0 0 0); transform: rotate(-180deg) scale(.6); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+.wheel-col {
+  opacity: 0;
+  transform-origin: center center;
+}
+.wheel-col.show {
+  animation: wheel-in .5s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+/* ── Quiz styles ──────────────────────────────────────────── */
+.quiz-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding: 12% 4% 4% 4%;
+}
+.quiz-q {
+  position: absolute;
+  top: 12%;
+  right: 3%;
+  width: 46%;
+  color: #e05c30;
+  font-size: 2.2vw;
+  font-weight: bold;
+  line-height: 1.3;
+  text-shadow: 1px 1px 3px rgba(0,0,0,.8);
+}
+.quiz-options {
+  position: absolute;
+  top: 24%;
+  right: 3%;
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5%;
+}
+.quiz-btn {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid #888;
+  border-radius: 2px;
+  background: rgba(0,0,0,.55);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  overflow: hidden;
+}
+.quiz-btn:hover { border-color: #fff; background: rgba(255,255,255,.12); }
+.quiz-letter {
+  background: rgba(50,50,50,.8);
+  color: #fff;
+  font-size: 2.2vw;
+  font-weight: bold;
+  padding: .6% 1.2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5%;
+}
+.quiz-text {
+  color: #fff;
+  font-size: 1.5vw;
+  padding: 1.2% 1.5%;
+  display: flex;
+  align-items: center;
+  line-height: 1.25;
+}
+.quiz-btn.wrong { border-color: #cc0000; background: rgba(180,0,0,.25); animation: shake .4s ease; }
+.quiz-btn.correct { border-color: #00cc44; background: rgba(0,180,60,.25); }
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-5px); }
+  80%      { transform: translateX(5px); }
+}
+
+/* Wrong overlay (red oval) */
+.wrong-overlay {
+  position: absolute;
+  left: 10%;
+  top: 30%;
+  width: 38%;
+  height: 30%;
+  background: #cc2200;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 2.8vw;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.3;
+  opacity: 0;
+  transform: scale(.6);
+  transition: opacity .25s ease, transform .25s cubic-bezier(.2,1.5,.4,1);
+  pointer-events: none;
+  z-index: 10;
+}
+.wrong-overlay.show { opacity: 1; transform: scale(1); }
+
+/* Correct overlay (green starburst) */
+.correct-overlay {
+  position: absolute;
+  left: 4%;
+  top: 20%;
+  width: 45%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(.5) rotate(-10deg);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.2,1.5,.4,1);
+  pointer-events: none;
+  z-index: 10;
+}
+.correct-overlay.show { opacity: 1; transform: scale(1) rotate(0deg); }
+.starburst {
+  background: #1a9c2a;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.correct-text {
+  position: absolute;
+  color: #fff;
+  font-size: 1.6vw;
+  font-weight: bold;
+  text-align: center;
+  padding: 0 8%;
+  line-height: 1.35;
+  text-shadow: 1px 1px 3px rgba(0,0,0,.6);
+}
+
+/* ── Navigation ───────────────────────────────────────────── */
+#nav-prev, #nav-next {
+  position: fixed;
+  bottom: 2vh;
+  z-index: 100;
+  background: rgba(0,0,0,.5);
+  border: 1px solid rgba(255,255,255,.25);
+  color: rgba(255,255,255,.7);
+  border-radius: 50%;
+  width: 4vh;
+  height: 4vh;
+  cursor: pointer;
+  font-size: 1.6vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .18s, color .18s;
+}
+#nav-prev { left: calc(50% - 5vh); }
+#nav-next { left: calc(50% + 1vh); }
+#nav-prev:hover, #nav-next:hover {
+  background: rgba(255,255,255,.2);
+  color: #fff;
+}
+
+#slide-counter {
+  position: fixed;
+  bottom: 2.2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.4);
+  font-size: 1.4vh;
+  z-index: 100;
+  pointer-events: none;
+  font-family: Arial, sans-serif;
+}
+
+/* ── Slide 5 table (built live over background) ──────────── */
+.s5-title {
+  position: absolute;
+  top: 4%;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 5.5vw;
+  color: #fff;
+  font-weight: 300;
+  text-shadow: 1px 2px 6px rgba(0,0,0,.5);
+}
+.s5-icon-row {
+  position: absolute;
+  top: 14%;
+  left: 26%;
+  right: 2%;
+  display: flex;
+  justify-content: space-around;
+  font-size: 3.5vw;
+}
+.s5-left {
+  position: absolute;
+  left: 2%;
+  top: 22%;
+  width: 22%;
+  font-size: 1.25vw;
+  color: #fff;
+  line-height: 1.5;
+}
+.s5-left .teal-note { color: #00d2c8; margin: 5% 0; }
+.s5-left .yellow-note { color: #FFE000; }
+.s5-table {
+  position: absolute;
+  left: 25%;
+  right: 2%;
+  top: 22%;
+  height: 70%;
+  display: flex;
+  gap: .4%;
+}
+.s5-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.s5-col-header {
+  font-size: 1.4vw;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+  padding: 3% 4%;
+  line-height: 1.25;
+}
+.s5-col-cells {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.s5-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4vw;
+  color: #fff;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.s5-cell.highlight { background: rgba(100,85,0,.5); border: 2px solid #FFE000; color: #fff; }
+.col-red   .s5-col-header { background: #c0392b; }
+.col-red   .s5-cell        { background: rgba(0,0,0,.45); }
+.col-yellow .s5-col-header { background: #d4860a; }
+.col-yellow .s5-cell        { background: rgba(0,0,0,.45); }
+.col-teal  .s5-col-header { background: #1a7a6e; }
+.col-teal  .s5-cell        { background: rgba(0,0,0,.45); }
+.col-green .s5-col-header { background: #1a6645; }
+.col-green .s5-cell        { background: rgba(0,0,0,.45); }
+.s5-caption {
+  position: absolute;
+  bottom: 2%;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 1.3vw;
+  color: #ddd;
+  font-style: italic;
+}
+
+/* ── Slide 3 live content ────────────────────────────────── */
+.s3-content {
+  position: absolute;
+  left: 35%;
+  top: 25%;
+  right: 4%;
+  display: flex;
+  flex-direction: column;
+  gap: 2%;
+}
+.s3-section-title { font-size: 1.9vw; font-weight: bold; color: #e05c30; margin-bottom: .5%; }
+.s3-para { font-size: 1.2vw; color: #ddd; line-height: 1.4; margin-bottom: 2%; }
+.s3-bullet { font-size: 1.2vw; color: #FFE000; margin: .3% 0; padding-left: 1.5%; }
+.s3-bullet::before { content: "• "; }
+
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<button id="nav-prev" aria-label="Previous slide">&#8592;</button>
+<div id="slide-counter"></div>
+<button id="nav-next" aria-label="Next slide">&#8594;</button>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// SLIDE DATA
+// Each slide: { bg, img, clicks: [ fn(stage) ], quiz: {...} }
+// bg = background PNG (always shown)
+// img = composed slide PNG (null for live-built slides)
+// clicks = array of functions, each called on successive clicks
+// quiz = object for quiz slides
+// ─────────────────────────────────────────────────────────────
+
+const BASE_SLIDE = 'assets/slides/';
+const BASE_BG    = 'assets/backgrounds/';
+
+// Helper: show a bullet with yellow→white transition
+function showBullet(el) {
+  el.classList.add('show');
+  setTimeout(() => el.classList.add('dim'), 600);
+}
+
+// Helper: show a section block
+function showBlock(el) { el.classList.add('show'); }
+
+const SLIDES = [
+
+  // ── Slide 1: Title ──────────────────────────────────────────
+  {
+    img: BASE_SLIDE + 'Slide2.PNG',
+    clicks: []
+  },
+
+  // ── Slide 2: Why Make a Pizza? ───────────────────────────────
+  // 2 sections. Click 1: section 1 header + para. Click 2: section 2 header + 3 bullets one by one.
+  {
+    bg: BASE_BG + 'Slide3.PNG',
+    build: (stage) => {
+      stage.innerHTML += `
+        <div class="slide-content s3-content" id="s3">
+          <div class="bullet" id="s3-h1" style="font-size:1.9vw;font-weight:bold;color:#e05c30;margin-bottom:.5%">Pizza is VERY popular.</div>
+          <div class="bullet" id="s3-p1" style="font-size:1.2vw;color:#ddd;line-height:1.4;margin-bottom:3%">Approximately 3 BILLION pizzas are sold in the U.S. each year. Americans eat approximately 100 acres of pizza EACH DAY, or about 350 slices per second!*</div>
+          <div class="bullet" id="s3-h2" style="font-size:1.9vw;font-weight:bold;color:#e05c30;margin-bottom:.5%">Pizza is easy to make.</div>
+          <div class="bullet" id="s3-b1" style="font-size:1.2vw;padding-left:1.5%;margin:.3% 0">• The ingredients are readily available</div>
+          <div class="bullet" id="s3-b2" style="font-size:1.2vw;padding-left:1.5%;margin:.3% 0">• Even if you make it from scratch, can be ready in an hour</div>
+          <div class="bullet" id="s3-b3" style="font-size:1.2vw;padding-left:1.5%;margin:.3% 0">• The recipe is not complicated</div>
+          <div style="position:absolute;bottom:1%;right:2%;font-size:1vw;color:#aaa;font-style:italic">*http://roccosgrandblanc.com/pizza-facts/</div>
+        </div>`;
+    },
+    clicks: [
+      (stage) => { // section 1
+        showBullet(document.getElementById('s3-h1'));
+        setTimeout(() => showBullet(document.getElementById('s3-p1')), 150);
+      },
+      (stage) => { // section 2 header
+        showBullet(document.getElementById('s3-h2'));
+      },
+      (stage) => { showBullet(document.getElementById('s3-b1')); },
+      (stage) => { showBullet(document.getElementById('s3-b2')); },
+      (stage) => { showBullet(document.getElementById('s3-b3')); },
+    ]
+  },
+
+  // ── Slide 3: Let's start with some questions (static) ───────
+  { img: BASE_SLIDE + 'Slide4.PNG', clicks: [] },
+
+  // ── Slide 4: How much pizza to make? (live, with wheel) ─────
+  {
+    bg: BASE_BG + 'Slide5.PNG',
+    build: (stage) => {
+      stage.innerHTML += `
+        <div class="slide-content">
+          <div class="s5-title">How much pizza to make?</div>
+          <div class="s5-icon-row">
+            <span>🍅</span><span>🫑</span><span>🌽</span><span>🫒</span>
+          </div>
+
+          <div class="section-block" id="s5-left">
+            <div class="s5-left">
+              <div style="font-size:1.15vw;line-height:1.5;color:#fff">This chart should give you a rough idea about how much pizza you will need for your occasion.</div>
+              <div class="teal-note" style="font-size:1.1vw;line-height:1.5">The number of pizza servings in the last column can be multiplied by the number of people you plan to make pizza for.</div>
+              <div class="yellow-note" style="font-size:1.1vw;line-height:1.5">For instance, if you make 3 14&rdquo; pizzas, you will have about 30 slices. This should serve between 12 and 15 people.</div>
+            </div>
+          </div>
+
+          <div class="section-block" id="s5-table">
+            <div class="s5-table">
+              <!-- Red col: Pizza size -->
+              <div class="s5-col col-red" id="s5-col-red">
+                <div class="s5-col-header">Pizza size in inches</div>
+                <div class="s5-col-cells">
+                  <div class="s5-cell">8-10&rdquo;</div>
+                  <div class="s5-cell">12&rdquo;</div>
+                  <div class="s5-cell highlight">14&rdquo;</div>
+                  <div class="s5-cell">16&rdquo;</div>
+                  <div class="s5-cell">18&rdquo;</div>
+                </div>
+              </div>
+              <!-- Yellow col: Slices (wheel anim) -->
+              <div class="s5-col col-yellow wheel-col" id="s5-col-yellow">
+                <div class="s5-col-header">Number of Pizza Slices</div>
+                <div class="s5-col-cells">
+                  <div class="s5-cell">6</div>
+                  <div class="s5-cell">8</div>
+                  <div class="s5-cell highlight">10</div>
+                  <div class="s5-cell">12</div>
+                  <div class="s5-cell">14</div>
+                </div>
+              </div>
+              <!-- Teal col: Price (wheel anim) -->
+              <div class="s5-col col-teal wheel-col" id="s5-col-teal">
+                <div class="s5-col-header">Price per Pizza (Average)</div>
+                <div class="s5-col-cells">
+                  <div class="s5-cell">$7.99-8.99</div>
+                  <div class="s5-cell">$10.99</div>
+                  <div class="s5-cell highlight">$13.49</div>
+                  <div class="s5-cell">$14.99</div>
+                  <div class="s5-cell">$16.49</div>
+                </div>
+              </div>
+              <!-- Green col: Servings -->
+              <div class="s5-col col-green" id="s5-col-green">
+                <div class="s5-col-header">Number of Pizza Servings</div>
+                <div class="s5-col-cells">
+                  <div class="s5-cell">2-3</div>
+                  <div class="s5-cell">3-4</div>
+                  <div class="s5-cell highlight">4-5</div>
+                  <div class="s5-cell">5-6</div>
+                  <div class="s5-cell">6-8</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="s5-caption">A good serving size for the average adult is 2-3 slices.</div>
+        </div>`;
+    },
+    clicks: [
+      // Click 1: white text + red/green columns + caption appear
+      (stage) => {
+        showBlock(document.getElementById('s5-left'));
+        showBlock(document.getElementById('s5-table'));
+      },
+      // Click 2: teal column wheels in
+      (stage) => {
+        document.getElementById('s5-col-teal').classList.add('show');
+      },
+      // Click 3: yellow column wheels in
+      (stage) => {
+        document.getElementById('s5-col-yellow').classList.add('show');
+      },
+    ]
+  },
+
+  // ── Slide 5: Steps in Making Pizza — 01 (static) ────────────
+  { img: BASE_SLIDE + 'Slide6.PNG', clicks: [] },
+
+  // ── Slide 6: Materials Necessary (11 bullets, 2 sections) ───
+  // >7 bullets: by section (ingredients 5, equipment 6)
+  {
+    bg: BASE_BG + 'Slide7.PNG',
+    build: (stage) => {
+      const items_ing = ['Pizza dough', 'Pizza sauce', '1 to 2 cups of cheese', 'Any pizza toppings that you like', 'Any sides you&rsquo;d like'];
+      const items_eq  = ['Oven', 'Bowl', 'Spatula', 'Plastic wrap', 'Pan', 'Stove <em>(for homemade pizza sauce)</em>'];
+      let html = `<div class="slide-content" style="position:absolute;left:52%;top:18%;right:2%;">`;
+      html += `<div class="section-block" id="s7-ing" style="margin-bottom:1.5%">`;
+      items_ing.forEach((t,i) => { html += `<div style="font-size:1.9vw;color:#fff;margin:.6% 0;padding-left:1.5%">• ${t}</div>`; });
+      html += `</div>`;
+      html += `<div class="section-block" id="s7-eq">`;
+      items_eq.forEach((t,i) => { html += `<div style="font-size:1.9vw;color:#fff;margin:.6% 0;padding-left:1.5%">• ${t}</div>`; });
+      html += `</div>`;
+      html += `</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: [
+      (stage) => { showBlock(document.getElementById('s7-ing')); },
+      (stage) => { showBlock(document.getElementById('s7-eq')); },
+    ]
+  },
+
+  // ── Slide 7: Materials (dimmed + callout) — static ──────────
+  { img: BASE_SLIDE + 'Slide8.PNG', clicks: [] },
+
+  // ── Slide 8: Recipe (static) ─────────────────────────────────
+  { img: BASE_SLIDE + 'Slide9.PNG', clicks: [] },
+
+  // ── Slide 9: Steps — 01+02 (static) ─────────────────────────
+  { img: BASE_SLIDE + 'Slide10.PNG', clicks: [] },
+
+  // ── Slide 10: Safety in the Kitchen (7 bullets, one by one) ──
+  {
+    bg: BASE_BG + 'Slide11.PNG',
+    build: (stage) => {
+      const bullets = [
+        'Always stay in the kitchen while using the stove. Turn off the stove if you leave the room.',
+        'Always turn pot handles toward the back of the stove and use the back burners whenever possible.',
+        'Roll up sleeves before cooking. Loose-fitting clothing can catch on fire.',
+        'Clean the stove, oven and burners regularly to prevent grease buildup.',
+        'Keep items that can catch on fire, such as dish towels and potholders, away from the stove.',
+        'If a smoke alarm sounds during normal cooking, open a door or fan the area. Do not disable the smoke alarm or take out the batteries.',
+        'Always wash hands before touching food. Avoid wearing nail polish while manipulating ingredients, such as kneading dough.'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:42%;top:8%;right:2%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around;">`;
+      bullets.forEach((b,i) => {
+        html += `<div class="bullet" id="s11-b${i}" style="font-size:1.35vw;line-height:1.4;color:#FFE000;padding-left:1.5%">• ${b}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;left:2%;bottom:5%;width:35%;background:rgba(30,30,30,.75);padding:2%;color:#fff;font-size:1.35vw;line-height:1.4">A few simple rules can ensure that the food turns out great, and that no one gets hurt.</div>`;
+      html += `<div style="position:absolute;left:2%;top:4%;color:#e05c30;font-size:4vw;font-weight:bold;line-height:1.1;width:35%">Safety in the<br>Kitchen</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: Array.from({length:7}, (_,i) => (stage) => {
+      const el = document.getElementById(`s11-b${i}`);
+      showBullet(el);
+    })
+  },
+
+  // ── Slide 11: Preheat the oven (static) ──────────────────────
+  { img: BASE_SLIDE + 'Slide12.PNG', clicks: [] },
+
+  // ── Slide 12: Prepare any pans (2 sections: paragraph + 3 steps) ─
+  {
+    bg: BASE_BG + 'Slide13.PNG',
+    build: (stage) => {
+      const steps = [
+        'Pour a tablespoon of cooking oil on the surface of the pizza pan.',
+        'Use a paper towel or basting brush to coat the entire surface of the pan with the oil.',
+        'Sprinkle a tablespoon or two of cornmeal over the oil on the pan. This will ensure the pizza dough does not stick to the pan and give the dough a traditional feel after cooking.'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:37%;top:5%;right:3%;bottom:4%">`;
+      html += `<div class="section-block" id="s13-para" style="margin-bottom:3%">
+        <div style="color:#FFE000;font-size:1.7vw;font-weight:bold;margin-bottom:1%">What kind of pizza pan should I use?</div>
+        <div style="color:#ddd;font-size:1.25vw;line-height:1.45;font-style:italic">You can cook pizza in any kind of pan that can stand up to the extreme heat of the oven. There is the traditional round, flat pan (sometimes with holes) that you've probably seen on tv or in the movies. But this isn't the only type of pan for pizza. Cast iron (non-enameled) also produces a tasty pizza crust. And, of course, thick crust pizza might require a deeper, rectangular roasting pan to contain all that goodness!</div>
+      </div>`;
+      steps.forEach((s,i) => {
+        html += `<div class="bullet" id="s13-s${i}" style="font-size:1.25vw;line-height:1.4;color:#FFE000;margin:1.5% 0;padding-left:.5%">${i+1}. ${s}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;left:2%;bottom:4%;font-size:4vw;color:#fff;font-weight:300">Prepare any pans</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: [
+      (stage) => { showBlock(document.getElementById('s13-para')); },
+      (stage) => { showBullet(document.getElementById('s13-s0')); },
+      (stage) => { showBullet(document.getElementById('s13-s1')); },
+      (stage) => { showBullet(document.getElementById('s13-s2')); },
+    ]
+  },
+
+  // ── Slide 13: Steps 01+02+03 (static) ───────────────────────
+  { img: BASE_SLIDE + 'Slide14.PNG', clicks: [] },
+
+  // ── Slide 14: Kneading the dough (4 bullets) ─────────────────
+  {
+    bg: BASE_BG + 'Slide15.PNG',
+    build: (stage) => {
+      const bullets = [
+        'Make sure you&rsquo;re kneading on a well-floured surface. That way you don&rsquo;t have to worry about your dough sticking to your bench or your hands.',
+        'One of the signs that your dough is ready is that it will be completely smooth after kneading it.',
+        'Your dough will be shaggy and lumpy to begin with, but once you&rsquo;ve kneaded it for a while it should be smooth and slightly tacky to touch.',
+        'An easy way of checking if your dough is kneaded enough is to simply poke it. If the hole where your finger was bounces back quickly, it&rsquo;s a good indicator your dough is ready to go.'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:45%;top:20%;right:3%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around;">`;
+      bullets.forEach((b,i) => {
+        html += `<div class="bullet" id="s15-b${i}" style="font-size:1.4vw;line-height:1.45;color:#FFE000;padding-left:1.5%">• ${b}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;left:45%;top:6%;color:#fff;font-size:3.5vw;font-weight:300">Kneading the dough</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: Array.from({length:4}, (_,i) => (stage) => {
+      showBullet(document.getElementById(`s15-b${i}`));
+    })
+  },
+
+  // ── Slide 15: Spreading the sauce (4 bullets) ────────────────
+  {
+    bg: BASE_BG + 'Slide16.PNG',
+    build: (stage) => {
+      const bullets = [
+        'Check your sauce consistency to make sure it will spread well but not make your pizza soggy. Perfect pizza sauce is about as thick as ketchup.',
+        'Drop two or three scoops of pizza sauce directly onto the center of the crust. Keep the sauce in one small area in the middle by dropping the second spoonful right on top of the first, then the third on top of the second.',
+        'Grasp the spoon about halfway down the handle toward the bowl. Set the bowl of the spoon into the center of the sauce.',
+        'Move the bowl of the spoon in a spiral, farther and farther out from the center of the dough toward the outer edge.'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:2%;top:18%;right:52%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around;">`;
+      bullets.forEach((b,i) => {
+        html += `<div class="bullet" id="s16-b${i}" style="font-size:1.3vw;line-height:1.4;color:#FFE000;padding-left:1.5%;background:rgba(0,0,0,.3);padding:.8%">• ${b}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;right:2%;top:3%;color:#fff;font-size:3.5vw;font-weight:300;text-align:right">Spreading the sauce</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: Array.from({length:4}, (_,i) => (stage) => {
+      showBullet(document.getElementById(`s16-b${i}`));
+    })
+  },
+
+  // ── Slide 16: Adding the toppings (2 sections) ───────────────
+  {
+    bg: BASE_BG + 'Slide17.PNG',
+    build: (stage) => {
+      const instruct = [
+        'Sprinkle an even layer of shredded mozzarella cheese (and/or other types of cheeses) over the sauce. The amount of cheese depends on your personal taste.',
+        'Add pizza toppings on top of the cheese. Cut all the toppings a similar size and place them in an even layer over the surface of the pizza.',
+        'If it&rsquo;s a special occasion, you might spell &ldquo;Happy Birthday&rdquo; with some of the ingredients!'
+      ];
+      const toppings = ['Pepperoni','Sausage','Mushrooms','Bacon','Onions','Extra Cheese','Peppers','Chicken','Olives','Spinach','Tomato and Basil','Beef','Ham','Pesto','Spicy Pork','Ham and Pineapple'];
+      let html = `<div class="slide-content">`;
+      html += `<div class="section-block" id="s17-instruct" style="position:absolute;left:37%;top:22%;width:33%">`;
+      instruct.forEach(b => { html += `<div style="font-size:1.2vw;color:#FFE000;line-height:1.4;margin-bottom:2%;padding-left:1.5%">• ${b}</div>`; });
+      html += `</div>`;
+      html += `<div class="section-block" id="s17-toppings" style="position:absolute;right:2%;top:18%;width:26%">`;
+      html += `<div style="color:#FFE000;font-size:1.3vw;font-style:italic;font-weight:bold;margin-bottom:3%">Suggested Pizza Toppings</div>`;
+      toppings.forEach(t => { html += `<div style="color:#FFE000;font-size:1.2vw;margin:.4% 0">${t}</div>`; });
+      html += `</div>`;
+      html += `<div style="position:absolute;right:2%;top:6%;color:#fff;font-size:3.5vw;font-weight:300">Adding the toppings</div>`;
+      html += `</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: [
+      (stage) => { showBlock(document.getElementById('s17-instruct')); },
+      (stage) => { showBlock(document.getElementById('s17-toppings')); },
+    ]
+  },
+
+  // ── Slide 17: Steps 01+02+03+04 (static) ────────────────────
+  { img: BASE_SLIDE + 'Slide18.PNG', clicks: [] },
+
+  // ── Slide 18: Putting pizza in the oven (3 bullets) ──────────
+  {
+    bg: BASE_BG + 'Slide19.PNG',
+    build: (stage) => {
+      const bullets = [
+        'Using oven mitts or other protective gear, place the pizza on the center rack for an evenly done pizza.',
+        'If you like your pizza crispier on the bottom, you can put it on the lower rack (or adjust your rack if you only have one.) <em>You may have to adjust your cooking time with this option to avoid burning.</em>',
+        'Set a timer, based on the size and thickness of your pizza. <em>Usually this will be somewhere around <span style="color:#FFE000">20-25 minutes</span>.</em>'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:34%;top:18%;right:2%;bottom:4%">`;
+      html += `<div style="color:#FFE000;font-size:2vw;font-weight:bold;text-align:center;background:rgba(0,0,0,.4);padding:1.5% 2%;margin-bottom:3%">Remember that the oven will be very hot!</div>`;
+      bullets.forEach((b,i) => {
+        html += `<div class="bullet" id="s19-b${i}" style="font-size:1.3vw;line-height:1.4;color:#FFE000;margin:2% 0;text-align:center;background:rgba(0,0,0,.35);padding:1% 2%">• ${b}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;left:34%;top:5%;right:2%;color:#fff;font-size:3.5vw;font-weight:300;text-align:right">Putting pizza in the oven</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: Array.from({length:3}, (_,i) => (stage) => {
+      showBullet(document.getElementById(`s19-b${i}`));
+    })
+  },
+
+  // ── Slide 19: While it's cooking #1 (3 bullets) ──────────────
+  {
+    bg: BASE_BG + 'Slide20.PNG',
+    build: (stage) => {
+      const bullets = [
+        'Now you can be preparing any sides to go with your pizza, like spinach artichoke dip, potato salad, garlic cheese bread, mozzarella sticks or chicken wings with blue cheese dip.',
+        'This is also a good time to set the table, get drinks ready, and prepare decorations, if appropriate.',
+        'You can also use this time to clean the kitchen area. When the pizza comes out, you&rsquo;ll be ready to sit down and enjoy with everyone else!'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:2%;top:18%;right:52%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around">`;
+      bullets.forEach((b,i) => {
+        html += `<div class="bullet" id="s20-b${i}" style="font-size:1.3vw;line-height:1.4;color:#FFE000;padding-left:1.5%">• ${b}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;left:2%;top:5%;color:#fff;font-size:3.5vw;font-weight:300">While it&rsquo;s cooking</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: Array.from({length:3}, (_,i) => (stage) => {
+      showBullet(document.getElementById(`s20-b${i}`));
+    })
+  },
+
+  // ── Slide 20: While it's cooking #2 (3 bullets) ──────────────
+  {
+    bg: BASE_BG + 'Slide21.PNG',
+    build: (stage) => {
+      const bullets = [
+        'Don&rsquo;t get too distracted while you&rsquo;re waiting for the pizza to cook, however.',
+        'Check periodically to see if the pizza is cooking to your taste.',
+        'This is especially important as the timer nears its ending time.'
+      ];
+      let html = `<div class="slide-content" style="position:absolute;left:2%;top:22%;right:52%;bottom:20%;display:flex;flex-direction:column;justify-content:space-around">`;
+      bullets.forEach((b,i) => {
+        html += `<div class="bullet" id="s21-b${i}" style="font-size:1.3vw;line-height:1.4;color:#FFE000;padding-left:1.5%;background:rgba(0,0,0,.35);padding:.8% 1.5%">• ${b}</div>`;
+      });
+      html += `</div>`;
+      html += `<div style="position:absolute;left:2%;bottom:3%;color:#fff;font-size:3.5vw;font-weight:300">While it&rsquo;s cooking</div>`;
+      stage.innerHTML += html;
+    },
+    clicks: Array.from({length:3}, (_,i) => (stage) => {
+      showBullet(document.getElementById(`s21-b${i}`));
+    })
+  },
+
+  // ── Slide 21: It's done! (static — has built-in starburst) ───
+  { img: BASE_SLIDE + 'Slide22.PNG', clicks: [] },
+
+  // ── Slide 22: Serve and enjoy! (static) ──────────────────────
+  { img: BASE_SLIDE + 'Slide23.PNG', clicks: [] },
+
+  // ── Slide 23: Review Questions title (static) ────────────────
+  { img: BASE_SLIDE + 'Slide24.PNG', clicks: [] },
+
+  // ── Slide 24: Quiz Q1 ─────────────────────────────────────────
+  {
+    bg: BASE_BG + 'Slide25.PNG',
+    quiz: {
+      question: 'Why is it important to know who will be eating the pizza?',
+      options: [
+        { letter: 'A', text: "If you're serving someone famous, you need to make a fancy pizza.", correct: false },
+        { letter: 'B', text: 'Some people have food allergies or are vegans or vegetarians.', correct: true  },
+        { letter: 'C', text: 'Some people never eat home made pizza. They always order out.', correct: false },
+        { letter: 'D', text: "You don't have to know who's eating the pizza.", correct: false },
+      ],
+      correctMsg: "You're right! Someone might have a severe allergy that could be triggered by a pizza ingredient. Safety first!"
+    }
+  },
+
+  // ── Slide 25: Quiz Q1 correct (static) ────────────────────────
+  { img: BASE_SLIDE + 'Slide26.PNG', clicks: [] },
+
+  // ── Slide 26: Quiz Q2 ─────────────────────────────────────────
+  {
+    bg: BASE_BG + 'Slide27.PNG',
+    quiz: {
+      question: 'What is the optimum temperature at which to cook a pizza?',
+      options: [
+        { letter: 'A', text: 'There is no optimum temperature. You should experiment to find one that you like.', correct: false },
+        { letter: 'B', text: '300 degrees should do in most cases.', correct: false },
+        { letter: 'C', text: 'Anything under 400 degrees will get the job done.', correct: false },
+        { letter: 'D', text: 'The hotter the better. If your oven can get 500 degrees or more, you should do that.', correct: true  },
+      ],
+      correctMsg: "Get that oven hot! Professional pizza ovens can reach 1000 degrees, so turn up the heat!"
+    }
+  },
+
+  // ── Slide 27: Quiz Q2 correct (static) ────────────────────────
+  { img: BASE_SLIDE + 'Slide28.PNG', clicks: [] },
+
+  // ── Slide 28: Quiz Q3 ─────────────────────────────────────────
+  {
+    bg: BASE_BG + 'Slide29.PNG',
+    quiz: {
+      question: 'How many slices of pizza should an average adult be served?',
+      options: [
+        { letter: 'A', text: 'Between 2-3', correct: true  },
+        { letter: 'B', text: 'Between 5-6', correct: false },
+        { letter: 'C', text: 'Between 8-10', correct: false },
+        { letter: 'D', text: 'A whole pizza', correct: false },
+      ],
+      correctMsg: "People love pizza, but a good serving for the average adult is between 2-3 slices."
+    }
+  },
+
+  // ── Slide 29: Quiz Q3 correct (static) ────────────────────────
+  { img: BASE_SLIDE + 'Slide30.PNG', clicks: [] },
+
+  // ── Slide 30: Sources (static) ───────────────────────────────
+  { img: BASE_SLIDE + 'Slide31.PNG', clicks: [] },
+
+  // ── Slide 31: Thank You (static, last slide) ─────────────────
+  { img: BASE_SLIDE + 'Slide32.PNG', clicks: [] },
+];
+
+// ─────────────────────────────────────────────────────────────
+// ENGINE
+// ─────────────────────────────────────────────────────────────
+const stage = document.getElementById('stage');
+const counter = document.getElementById('slide-counter');
+let current = 0;
+let clickStep = 0;
+let transitioning = false;
+
+function buildSlide(idx) {
+  const s = SLIDES[idx];
+  const div = document.createElement('div');
+  div.className = 'slide';
+  div.dataset.idx = idx;
+
+  // Background
+  const bg = s.bg || s.img;
+  if (bg) {
+    const img = document.createElement('img');
+    img.className = 'slide-bg';
+    img.src = s.img || s.bg; // If img, use img; otherwise use bg
+    div.appendChild(img);
+  }
+
+  // Quiz slide
+  if (s.quiz) {
+    const q = s.quiz;
+    const overlay = document.createElement('div');
+    overlay.innerHTML = `
+      <div class="quiz-q">${q.question}</div>
+      <div class="quiz-options" id="qopts-${idx}">
+        ${q.options.map((o,i) => `
+          <div class="quiz-btn" data-correct="${o.correct}" data-idx="${i}" id="qbtn-${idx}-${i}">
+            <div class="quiz-letter">${o.letter}</div>
+            <div class="quiz-text">${o.text}</div>
+          </div>`).join('')}
+      </div>
+      <div class="wrong-overlay" id="wrong-${idx}">That&rsquo;s not<br>correct.<br>Try again!</div>
+      <div class="correct-overlay" id="correct-${idx}">
+        <div class="starburst"></div>
+        <div class="correct-text">${q.correctMsg}</div>
+      </div>`;
+    div.appendChild(overlay);
+  } else if (s.build) {
+    // Live-built slide: bg is the background
+    const bgImg = document.createElement('img');
+    bgImg.className = 'slide-bg';
+    bgImg.src = s.bg;
+    div.innerHTML = '';
+    div.appendChild(bgImg);
+    s.build(div);
+  } else {
+    // Static composed image
+    div.innerHTML = `<img class="slide-bg" src="${s.img}">`;
+  }
+
+  return div;
+}
+
+function goTo(idx, dir) {
+  if (transitioning) return;
+  if (idx < 0 || idx >= SLIDES.length) return;
+
+  transitioning = true;
+  const incoming = buildSlide(idx);
+  stage.appendChild(incoming);
+
+  // Wire quiz clicks
+  const s = SLIDES[idx];
+  if (s.quiz) {
+    const q = s.quiz;
+    incoming.querySelectorAll('.quiz-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isCorrect = btn.dataset.correct === 'true';
+        const wrongOverlay = document.getElementById(`wrong-${idx}`);
+        const correctOverlay = document.getElementById(`correct-${idx}`);
+
+        if (isCorrect) {
+          btn.classList.add('correct');
+          wrongOverlay.classList.remove('show');
+          correctOverlay.classList.add('show');
+          // Disable all buttons
+          incoming.querySelectorAll('.quiz-btn').forEach(b => b.style.pointerEvents = 'none');
+          // Auto-advance after 1.8s
+          setTimeout(() => { if (current === idx) advance(); }, 1800);
+        } else {
+          btn.classList.add('wrong');
+          wrongOverlay.classList.add('show');
+          setTimeout(() => {
+            btn.classList.remove('wrong');
+            wrongOverlay.classList.remove('show');
+          }, 1200);
+        }
+      });
+    });
+  }
+
+  // Fade in
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      // Outgoing
+      const outgoing = stage.querySelector(`.slide.active`);
+      if (outgoing) {
+        outgoing.classList.remove('active');
+        outgoing.classList.add('outgoing');
+        setTimeout(() => outgoing.remove(), 600);
+      }
+      incoming.classList.add('active');
+      transitioning = false;
+    });
+  });
+
+  current = idx;
+  clickStep = 0;
+  updateCounter();
+}
+
+function advance() {
+  if (current < SLIDES.length - 1) {
+    goTo(current + 1, 1);
+  }
+}
+
+function handleClick(e) {
+  // Don't intercept quiz clicks or nav buttons
+  if (e.target.closest('.quiz-btn') || e.target.closest('#nav-prev') || e.target.closest('#nav-next')) return;
+
+  const s = SLIDES[current];
+  if (s.quiz) return; // quiz handles its own clicks
+
+  if (clickStep < (s.clicks || []).length) {
+    s.clicks[clickStep](stage);
+    clickStep++;
+  } else {
+    advance();
+  }
+}
+
+function updateCounter() {
+  counter.textContent = `${current + 1} / ${SLIDES.length}`;
+}
+
+// Navigation
+document.getElementById('nav-next').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const s = SLIDES[current];
+  if (!s.quiz && clickStep < (s.clicks || []).length) {
+    s.clicks[clickStep](stage);
+    clickStep++;
+  } else {
+    advance();
+  }
+});
+
+document.getElementById('nav-prev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (current > 0) goTo(current - 1, -1);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    document.getElementById('nav-next').click();
+  }
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    if (current > 0) goTo(current - 1, -1);
+  }
+});
+
+stage.addEventListener('click', handleClick);
+
+// ── Start ────────────────────────────────────────────────────
+const first = buildSlide(0);
+stage.appendChild(first);
+first.classList.add('active');
+updateCounter();
+
+// Preload next slide image
+function preloadNext(idx) {
+  const next = SLIDES[idx + 1];
+  if (!next) return;
+  const src = next.img || next.bg;
+  if (src) { const i = new Image(); i.src = src; }
+}
+preloadNext(0);
+stage.addEventListener('transitionend', () => preloadNext(current));
+</script>
+</body>
+</html>
