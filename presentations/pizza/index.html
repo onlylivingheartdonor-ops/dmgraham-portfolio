@@ -1,1231 +1,479 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!doctype html>
+<html lang="en-US">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How To Make A Pizza</title>
-<style>
-/* ── Reset & base ───────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  width: 100%; height: 100%;
-  background: #000;
-  font-family: Arial, Helvetica, sans-serif;
-  overflow: hidden;
-  user-select: none;
-}
+  <meta charset="utf-8">
+  <!-- Created using Storyline 360 x64 - http://www.articulate.com  -->
+  <!-- version: 3.108.36078.0 -->
+  <title>How to Make a Pizza</title>
+  <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,shrink-to-fit=no,minimal-ui"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <style>
+    html, body { height: 100%; padding: 0; margin: 0 }
+    #app { height: 100%; width: 100%; }
+  </style>
 
-/* ── Stage: 16:9, centred ───────────────────────────────────── */
-#stage {
-  position: relative;
-  width: 100vw;
-  height: 56.25vw;
-  max-height: 100vh;
-  max-width: 177.78vh;
-  margin: auto;
-  top: 50%;
-  transform: translateY(-50%);
-  overflow: hidden;
-}
+  <script>
+    window.DS = {};
+    window.globals = {
+      DATA_PATH_BASE: '',
+      HAS_FRAME: true,
+      HAS_SLIDE: true,
 
-/* ── Slide container ────────────────────────────────────────── */
-.slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity .45s ease;
-  pointer-events: none;
-}
-.slide.active  { opacity: 1; pointer-events: auto; z-index: 2; }
-.slide.leaving { opacity: 0; z-index: 1; }
+      lmsPresent: false,
+      tinCanPresent: false,
+      cmi5Present: false,
+      aoSupport: false,
+      scale: 'Scaled',
+      captureRc: false,
+      browserSize: 'optimal',
+      bgColor: '#282828',
+      features: 'DropInBase,LocalizationCaptionReview,PlayerSizeOption,SlideLevelScale',
+      themeName: 'unified',
+      preloaderColor: '#FFFFFF',
+      suppressAnalytics: false,
+      productChannel: 'stable',
+      publishSource: 'storyline',
+      aid: 'aid|9bcc8299-ac58-4033-bd10-2dbdd8379dea',
+      cid: '3498e6ab-65d2-4202-96bd-dcf14dd1ed9f',
+      playerVersion: '3.108.36078.0',
+      publishTimestamp: '2026-06-26T01:52:28.4250014Z',
+      maxIosVideoElements: 10,
+      connectionSettings: { message: 'You%20are%20offline.%20Trying%20to%20reconnect...', useDarkTheme: false, mode: 'disabled' },
+      hasFeature: function(feature) {
+        return this.features.split(',').includes(feature);
+      },
+      
+      parseParams: function(qs) {
+        if (window.globals.parsedParams != null) {
+          return window.globals.parsedParams;
+        }
+        qs = (qs || window.location.search.substr(1)).split('+').join(' ');
+        var params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
 
-/* Full-cover background image */
-.bg {
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
+        while (tokens = re.exec(qs)) {
+          params[decodeURIComponent(tokens[1]).trim()] =
+            decodeURIComponent(tokens[2]).trim();
+        }
+        window.globals.parsedParams = params;
+        return params;
+      }
 
-/* ── Typography scale (all relative to slide width via vw) ──── */
-/* Slide is always 100vw wide at max-width; safe zone ~94vw     */
-/* Title sizes */
-.t-hero   { font-size: 5.5vw; font-weight: 300; color: #fff; }
-.t-title  { font-size: 3.6vw; font-weight: 300; color: #fff; }
-.t-head   { font-size: 2.0vw; font-weight: 700; color: #fff; }
-.t-subhd  { font-size: 1.6vw; font-weight: 400; color: #fff; }
-.t-body   { font-size: 1.35vw; font-weight: 400; color: #fff; line-height: 1.5; }
-.t-small  { font-size: 1.1vw;  font-weight: 400; color: #ddd; line-height: 1.4; }
-.t-orange { color: #e05c30; }
-.t-yellow { color: #FFE000; }
-.t-teal   { color: #00d4c8; }
-.t-grey   { color: #aaa; }
+    };
 
-/* ── Semi-transparent box ───────────────────────────────────── */
-.box-dark {
-  background: rgba(0,0,0,.60);
-  border-radius: 2px;
-}
-.box-mid {
-  background: rgba(40,40,40,.70);
-  border-radius: 2px;
-}
+    if (window.flagsUnderTest != null) {
+      window.globals.features = window.flagsUnderTest.reduce((accum, feature) => {
+        if (!accum.includes(feature)) {
+          accum.push(feature);
+        }
+        return accum;
+      }, window.globals.features.split(',')).join();
+    }
+  </script>
+  <script>
+    var isIe11 = ('ActiveXObject' in window || window.MSBlobBuilder != null)
+      && window.msCrypto != null && !window.ActiveXObject;
+    if (isIe11) {
+      window.globals.unsupportedBrowser = true;
+      document.write(atob('PHN0eWxlPg0KICBAZm9udC1mYWNlIHsNCiAgICBmb250LWZhbWlseTogIk9wZW4gU2FucyBGdWxsIjsNCiAgICBmb250LXN0eWxlOiBub3JtYWw7DQogICAgZm9udC13ZWlnaHQ6IDQwMDsNCiAgICBzcmM6IHVybCgiLi9odG1sNS9saWIvc3R5bGVzaGVldHMvbW9iaWxlLWZvbnRzL29wZW4tc2Fucy1yZWd1bGFyLndvZmYiKSBmb3JtYXQoIndvZmYiKTsNCiAgfQ0KDQogICogew0KICAgIG1hcmdpbjogMDsNCiAgICBwYWRkaW5nOiAwOw0KICB9DQoNCiAgYm9keSwNCiAgaHRtbCB7DQogICAgYmFja2dyb3VuZDogYmxhY2s7DQogICAgY29sb3I6IHdoaXRlOw0KICAgIGZvbnQtZmFtaWx5OiAiT3BlbiBTYW5zIEZ1bGwiLCBzYW5zLXNlcmlmOw0KICAgIGZvbnQtc2l6ZTogMTZweDsNCiAgICBoZWlnaHQ6IDEwMCU7DQogICAgdGV4dC1hbGlnbjogY2VudGVyOw0KICAgIG92ZXJmbG93OiBoaWRkZW47DQogIH0NCg0KICAuc2xpZGUtbG9hZGVyIHsNCiAgICBkaXNwbGF5OiBub25lOw0KICB9DQoNCiAgLm1vYmlsZS1zdGFydC1jb3Vyc2UtdGl0bGUgew0KICAgIGZvbnQtc2l6ZTogMjlweDsNCiAgICBwYWRkaW5nLWJvdHRvbTogMzMuNzVweDsNCiAgICBwYWRkaW5nLXRvcDogMzMuNzVweDsNCiAgICB0ZXh0LXNoYWRvdzogNHB4IDRweCAyNXB4IHJnYigwLCAwLCAwLCAuMyk7DQogICAgY29sb3I6ICNlOGU4ZTg7DQogICAgei1pbmRleDogOTk5Ow0KICB9DQoNCiAgcCB7DQogICAgZm9udC1zaXplOiAxLjFlbTsNCiAgfQ0KDQogIHNwYW4gew0KICAgIGhlaWdodDogMTAwJTsNCiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCiAgfQ0KDQogIC5jb250ZW50IHsNCiAgICBiYWNrZ3JvdW5kOiAjMDAwOw0KICAgIHRleHQtYWxpZ246IGxlZnQ7DQogICAgZm9udC1zaXplOiAxNXB4Ow0KICAgIGNvbG9yOiAjYWFhOw0KICAgIHdpZHRoOiA4MCU7DQogICAgbWF4LXdpZHRoOiA1MzVweDsNCiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCiAgfQ0KDQogIC5idG4tY29udGFpbiB7DQogICAgcG9zaXRpb246IHJlbGF0aXZlOw0KICAgIG1hcmdpbi10b3A6IDNlbTsNCiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7DQogIH0NCg0KICAuaWUxMS13YXJuIHAgYSB7DQogICAgY29sb3I6ICM1ZGIwZmYgIWltcG9ydGFudDsNCiAgICB0ZXh0LWRlY29yYXRpb246IHVuZGVybGluZSAhaW1wb3J0YW50Ow0KICB9DQoNCiAgYS5sZWFybiB7DQogICAgcG9zaXRpb246IHJlbGF0aXZlOw0KICAgIGZsb2F0OiBsZWZ0Ow0KICAgIG1hcmdpbi1yaWdodDogMmVtOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCiAgICBib3JkZXI6IDFweCBzb2xpZCB3aGl0ZTsNCiAgICBjb2xvcjogYmxhY2sgIWltcG9ydGFudDsNCiAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7DQogICAgcGFkZGluZzogLjVlbTsNCiAgICBwYWRkaW5nOiAxOHB4Ow0KICAgIHBhZGRpbmctbGVmdDogNTBweDsNCiAgICBwYWRkaW5nLXJpZ2h0OiAzMHB4Ow0KICAgIGJhY2tncm91bmQ6ICNmZmY7DQogICAgYm9yZGVyLXJhZGl1czogNDBweDsNCiAgICBjdXJzb3I6IHBvaW50ZXI7DQogIH0NCg0KICBhLmxlYXJuOmFmdGVyIHsNCiAgICBjb250ZW50OiAiIjsNCiAgICBwb3NpdGlvbjogYWJzb2x1dGU7DQogICAgcG9pbnRlci1ldmVudHM6IG5vbmU7DQogICAgbGVmdDogMjBweDsNCiAgICB0b3A6IDUwJTsNCiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTUwJSk7DQogICAgd2lkdGg6IDA7DQogICAgaGVpZ2h0OiAwOw0KICAgIGJvcmRlci1zdHlsZTogc29saWQ7DQogICAgYm9yZGVyLXdpZHRoOiA5cHggMCA5cHggMTVweDsNCiAgICBib3JkZXItY29sb3I6IHRyYW5zcGFyZW50IHRyYW5zcGFyZW50IHRyYW5zcGFyZW50ICM2ZTZlNmU7DQogICAgY2xlYXI6IGJvdGg7DQogIH0NCg0KICAuaWUxMS13YXJuIHsNCiAgICBwb3NpdGlvbjogZml4ZWQ7DQogICAgd2lkdGg6IDEwMCU7DQogICAgaGVpZ2h0OiAxMDAlOw0KICAgIGJhY2tncm91bmQ6IGJsYWNrOw0KICB9DQo8L3N0eWxlPg0KDQo8ZGl2IGNsYXNzPSJpZTExLXdhcm4iPg0KICA8c3Bhbj48L3NwYW4+DQogIDxkaXYgY2xhc3M9ImNvbnRlbnQiPg0KICAgIDxkaXYgY2xhc3M9Im1vYmlsZS1zdGFydC1jb3Vyc2UtdGl0bGUiPkVuZCBvZiBTdXBwb3J0IGZvciBJbnRlcm5ldCBFeHBsb3JlciAxMTwvZGl2Pg0KICAgIDxwPkZvbGxvd2luZyBNaWNyb3NvZnQncyBsZWFkLCB3ZSBlbmRlZCBzdXBwb3J0IGZvciBJbnRlcm5ldCBFeHBsb3JlciAxMSAoSUUxMSkuDQogICAgICBBcyBvZiBKdWx5IDIwMjIsIHlvdSBjYW4gbm8gbG9uZ2VyIHZpZXcgUmlzZSAzNjAsIFN0b3J5bGluZSAzNjAsIG9yIFN0dWRpbyAzNjANCiAgICAgIGNvdXJzZXMgaW4gSUUxMS4gVXNlIHRoZSBsYXRlc3QgdmVyc2lvbiBvZiBhIHN1cHBvcnRlZCBicm93c2VyIC0NCiAgICAgIDxhIGhyZWY9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vY2hyb21lL2Rvd25sb2Fkcy8iIHRhcmdldD0iX2JsYW5rIj5Hb29nbGUgQ2hyb21lPC9hPiwNCiAgICAgIDxhIGhyZWY9Imh0dHBzOi8vd3d3Lm1pY3Jvc29mdC5jb20vZW4tdXMvZWRnZSIgdGFyZ2V0PSJfYmxhbmsiPk1pY3Jvc29mdCBFZGdlPC9hPiwNCiAgICAgIG9yDQogICAgICA8YSBocmVmPSJodHRwczovL3d3dy5tb3ppbGxhLm9yZy9lbi1VUy9maXJlZm94L25ldy8iIHRhcmdldD0iX2JsYW5rIj5Nb3ppbGxhIEZpcmVmb3g8L2E+Lg0KICAgIDwvcD4NCiAgICA8ZGl2IGNsYXNzPSJidG4tY29udGFpbiI+DQogICAgICA8YSBjbGFzcz0ibGVhcm4iIGhyZWY9Imh0dHBzOi8vYXJ0aWN1bGF0ZS5jb20vc3VwcG9ydC9hcnRpY2xlL0VuZC1vZi1TdXBwb3J0LWZvci1JbnRlcm5ldC1FeHBsb3Jlci0xMSINCiAgICAgICAgdGFyZ2V0PSJfYmxhbmsiPkxlYXJuIE1vcmU8L2E+DQogICAgPC9kaXY+DQogIDwvZGl2Pg0KPC9kaXY+DQo='));
+    }
+  </script>
 
-/* ── Bullet animation: float up, yellow → white ─────────────── */
-.blt {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: none;
-  color: #FFE000;
-}
-.blt.in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity .4s ease, transform .4s ease;
-}
-.blt.dim { color: #fff; transition: color .5s ease; }
+  <script>
+    if (window.globals.hasFeature('Localization')) {
+      
+      
+    }
+  </script>
 
-/* Section-block reveal (whole box fades in) */
-.blk {
-  opacity: 0;
-  transform: translateY(8px);
-  transition: none;
-}
-.blk.in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity .4s ease, transform .4s ease;
-}
-
-/* ── Steps in Making Pizza ──────────────────────────────────── */
-.step-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5%;
-  margin-bottom: 3%;
-}
-.step-num {
-  font-size: 7vw;
-  font-weight: 700;
-  line-height: 1;
-  min-width: 9%;
-  text-align: right;
-}
-.step-text { flex: 1; }
-.step-head { font-size: 2vw; font-weight: 700; margin-bottom: .4%; }
-.step-desc { font-size: 1.2vw; line-height: 1.4; }
-.step-active .step-num  { color: #e05c30; }
-.step-active .step-head { color: #fff; }
-.step-active .step-desc { color: #ddd; }
-.step-done .step-num  { color: #555; }
-.step-done .step-head { color: #666; }
-.step-done .step-desc { color: #555; }
-
-/* ── Wheel animation for slide 5 table columns ──────────────── */
-@keyframes wheel-reveal {
-  0%   { transform: rotate(-180deg) scale(.5); opacity: 0; }
-  70%  { opacity: 1; }
-  100% { transform: rotate(0deg) scale(1); opacity: 1; }
-}
-.wheel-col { opacity: 0; transform-origin: center center; }
-.wheel-col.in { animation: wheel-reveal .5s cubic-bezier(.4,0,.2,1) forwards; }
-
-/* ── Quiz ───────────────────────────────────────────────────── */
-.quiz-q {
-  font-size: 2vw;
-  font-weight: 700;
-  color: #e05c30;
-  line-height: 1.3;
-  margin-bottom: 3%;
-}
-.quiz-options { display: flex; flex-direction: column; gap: 1.8%; }
-.quiz-btn {
-  display: flex;
-  align-items: stretch;
-  border: 1.5px solid rgba(180,180,180,.6);
-  border-radius: 2px;
-  background: rgba(0,0,0,.55);
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-  height: 9.5vh; /* uniform height for all options */
-  overflow: hidden;
-}
-.quiz-btn:hover:not(.locked) { border-color: #fff; background: rgba(255,255,255,.1); }
-.quiz-letter {
-  background: rgba(30,30,30,.8);
-  color: #fff;
-  font-size: 2.2vw;
-  font-weight: 700;
-  width: 5.5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.quiz-text {
-  color: #fff;
-  font-size: 1.35vw;
-  padding: 0 2%;
-  display: flex;
-  align-items: center;
-  line-height: 1.3;
-}
-.quiz-btn.wrong   { border-color: #c00; background: rgba(160,0,0,.3); animation: shake .38s ease; }
-.quiz-btn.correct { border-color: #0a0; background: rgba(0,140,50,.3); pointer-events: none; }
-.locked { pointer-events: none; }
-
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  20%      { transform: translateX(-7px); }
-  50%      { transform: translateX(7px); }
-  75%      { transform: translateX(-4px); }
-}
-
-/* Wrong overlay */
-.wrong-ov {
-  position: absolute;
-  left: 5%; top: 30%;
-  width: 35%; height: 30%;
-  background: #c01800;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  font-size: 2.4vw;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.3;
-  opacity: 0;
-  transform: scale(.5);
-  transition: opacity .2s ease, transform .25s cubic-bezier(.2,1.4,.4,1);
-  pointer-events: none;
-  z-index: 8;
-}
-.wrong-ov.in { opacity: 1; transform: scale(1); }
-
-/* Correct starburst — visual only, no text */
-.correct-ov {
-  position: absolute;
-  left: 5%; top: 25%;
-  width: 40%; height: 45%;
-  opacity: 0;
-  transform: scale(.4) rotate(-15deg);
-  transition: opacity .25s ease, transform .3s cubic-bezier(.2,1.5,.4,1);
-  pointer-events: none;
-  z-index: 8;
-}
-.correct-ov.in { opacity: 1; transform: scale(1) rotate(0deg); }
-.starburst {
-  width: 100%; height: 100%;
-  background: #1a9c2a;
-  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-  display: flex; align-items: center; justify-content: center;
-}
-.correct-checkmark {
-  position: absolute;
-  inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff;
-  font-size: 6vw;
-  font-weight: 700;
-}
-
-/* ── Navigation arrows ──────────────────────────────────────── */
-#nav-prev, #nav-next {
-  position: fixed;
-  bottom: 1.5vh;
-  z-index: 200;
-  width: 5.5vh; height: 5.5vh;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.35);
-  background: rgba(0,0,0,.55);
-  color: rgba(255,255,255,.8);
-  font-size: 2.2vh;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .18s, border-color .18s, color .18s;
-}
-#nav-prev { left: 2vh; }
-#nav-next { right: 2vh; }
-#nav-prev:hover, #nav-next:hover {
-  background: rgba(255,255,255,.2);
-  border-color: rgba(255,255,255,.7);
-  color: #fff;
-}
-
-#counter {
-  position: fixed;
-  bottom: 2.2vh;
-  left: 50%; transform: translateX(-50%);
-  color: rgba(255,255,255,.35);
-  font-size: 1.4vh;
-  font-family: Arial, sans-serif;
-  pointer-events: none;
-  z-index: 200;
-}
-</style>
+  
+  
+  <script>window.THREE = { };</script>
+  
 </head>
-<body>
+<body style="background: #282828" class="cs-HTML theme-unified">
+  <!-- 360 -->
+  <script>!function(){var e,i=/iPhone/i,o=/iPod/i,n=/iPad/i,t=/\biOS-universal(?:.+)Mac\b/i,r=/\bAndroid(?:.+)Mobile\b/i,a=/Android/i,d=/(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i,p=/Silk/i,l=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,b=/BlackBerry/i,s=/BB10/i,c=/Opera Mini/i,f=/\b(CriOS|Chrome)(?:.+)Mobile/i,h=/Mobile(?:.+)Firefox\b/i,v=function(e){return void 0!==e&&"MacIntel"===e.platform&&"number"==typeof e.maxTouchPoints&&e.maxTouchPoints>1&&"undefined"==typeof MSStream};e=function(e){var m={userAgent:"",platform:"",maxTouchPoints:0};e||"undefined"==typeof navigator?"string"==typeof e?m.userAgent=e:e&&e.userAgent&&(m={userAgent:e.userAgent,platform:e.platform,maxTouchPoints:e.maxTouchPoints||0}):m={userAgent:navigator.userAgent,platform:navigator.platform,maxTouchPoints:navigator.maxTouchPoints||0};var g=m.userAgent,y=g.split("[FBAN");void 0!==y[1]&&(g=y[0]),void 0!==(y=g.split("Twitter"))[1]&&(g=y[0]);var A=function(e){return function(i){return i.test(e)}}(g),w={apple:{phone:A(i)&&!A(l),ipod:A(o),tablet:!A(i)&&(A(n)||v(m))&&!A(l),universal:A(t),device:(A(i)||A(o)||A(n)||A(t)||v(m))&&!A(l)},amazon:{phone:A(d),tablet:!A(d)&&A(p),device:A(d)||A(p)},android:{phone:!A(l)&&A(d)||!A(l)&&A(r),tablet:!A(l)&&!A(d)&&!A(r)&&(A(p)||A(a)),device:!A(l)&&(A(d)||A(p)||A(r)||A(a))||A(/\bokhttp\b/i)},windows:{phone:A(l),tablet:A(u),device:A(l)||A(u)},other:{blackberry:A(b),blackberry10:A(s),opera:A(c),firefox:A(h),chrome:A(f),device:A(b)||A(s)||A(c)||A(h)||A(f)},any:!1,phone:!1,tablet:!1};return w.any=w.apple.device||w.android.device||w.windows.device||w.other.device,w.phone=w.apple.phone||w.android.phone||w.windows.phone,w.tablet=w.apple.tablet||w.android.tablet||w.windows.tablet,w}(),"object"==typeof exports&&"undefined"!=typeof module?module.exports=e:"function"==typeof define&&define.amd?define((function(){return e})):this.isMobile=e}();
+    window.isMobile.apple.tablet = window.isMobile.apple.tablet ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    window.isMobile.apple.device = window.isMobile.apple.device || window.isMobile.apple.tablet;
+    window.isMobile.tablet = window.isMobile.tablet || window.isMobile.apple.tablet;
+    window.isMobile.any = window.isMobile.any || window.isMobile.apple.tablet;
+  </script>
 
-<div id="stage"></div>
-<button id="nav-prev">&#8592;</button>
-<div id="counter"></div>
-<button id="nav-next">&#8594;</button>
+  <div id="focus-sink" tabindex="-1"></div>
+
+  <div id="preso"></div>
+  <script>
+    (function() {
+
+      var classTypes = [ 'desktop', 'mobile', 'phone', 'tablet' ];
+
+      var addDeviceClasses = function(prefix, testObj) {
+        var curr, i;
+        for (i = 0; i < classTypes.length; i++) {
+          curr = classTypes[i];
+          if (testObj[curr]) {
+            document.body.classList.add(prefix + curr);
+          }
+        }
+      };
+
+      var params = window.globals.parseParams(),
+          isDevicePreview = params.devicepreview === '1',
+          isPhoneOverride = params.deviceType === 'phone' || (isDevicePreview && params.phone == '1'),
+          isTabletOverride = (params.deviceType === 'tablet' || isDevicePreview) && !isPhoneOverride,
+          isMobileOverride = isPhoneOverride || isTabletOverride;
+
+      var deviceView = {
+        desktop: !window.isMobile.any && !isMobileOverride,
+        mobile: window.isMobile.any || isMobileOverride,
+        phone: isPhoneOverride || (window.isMobile.phone && !isTabletOverride),
+        tablet: isTabletOverride || window.isMobile.tablet
+      };
+
+      window.globals.deviceView = deviceView;
+      window.isMobile.desktop = !window.isMobile.any;
+      window.isMobile.mobile = window.isMobile.any;
+
+      addDeviceClasses('view-', deviceView);
+
+    })();
+  </script>
+  
+  <script src='story_content/triggers.js' type=text/javascript></script>
+<script src='story_content/user.js' type=text/javascript></script>
+  <div class="slide-loader"></div>
+
+  <script>
+    var doc = document, loader = doc.body.querySelector('.slide-loader'); [ 1, 2, 3 ].forEach(function(n) { var d = doc.createElement('div'); d.style.backgroundColor = window.globals.preloaderColor; d.classList.add('mobile-loader-dot'); d.classList.add('dot' + n); loader.appendChild(d); });
+  </script>
+
+  <div class="mobile-load-title-overlay" style="display: none">
+    <div class="mobile-load-title">How to Make a Pizza</div>
+  </div>
+
+  <div class="mobile-chrome-warning"></div>
+
+  
+<style>
+  .warn-connection-dialog {
+    display: none;
+    background: transparent;
+    pointer-events: all;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+  }
+
+  .warn-connection-content {
+    pointer-events: all;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid #E7E7E7;
+    color: #333333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    transition: all 150ms ease-out;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  .view-phone.is-landscape .warn-connection-content {
+    left: 23px;
+    bottom: 23px;
+  }
+
+  .view-tablet.is-landscape .warn-connection-content {
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+  }
+
+  .view-mobile.is-portrait .warn-connection-content {
+    transform: translate(-50%, calc(-100% - 15px));
+  }
+
+  .warn-connection-content p {
+    display: inline-block;
+    margin: 0 8px 0 0;
+    line-height: 33px;
+    font-size: 11px;
+  }
+
+  .warn-connection-content svg {
+    position: relative;
+    vertical-align: middle;
+    margin: 0 2px 2px 8px;
+  }
+
+  .view-desktop .warn-connection-content {
+    left: 1.5em;
+    bottom: 1.5em;
+  }
+
+  .view-desktop .warn-connection-content p {
+    font-size: 1.1em;
+  }
+
+  .is-offline .warn-connection-dialog {
+    display: block;
+  }
+
+  .is-offline .cs-panel * {
+    pointer-events: none !important;
+  }
+
+  .is-offline .cs-panel {
+    pointer-events: all !important;
+  }
+
+  .is-offline #nav-controls * {
+    pointer-events: none !important;
+  }
+
+  .is-offline #nav-controls {
+    pointer-events: all !important;
+  }
+</style>
+
+<div class="warn-connection-dialog" role="alertdialog" aria-modal="true" tabindex="0" aria-labelledby="warn-connection-message">
+  <div class="warn-connection-content">
+    <svg width="17" height="15" viewBox="0 0 17 15" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#8F0000" stroke="white" d="M16.07,12.98 L15.88,12.23 L9.51,1.21 C8.97,0.26,7.6,0.26,7.06,1.21 L0.69,12.23 C0.15,13.16,0.81,14.36,1.91,14.36 H14.65 C15.47,14.36,16.05,13.7,16.07,12.98 Z"/>
+      <path fill="white" stroke="white" d="M8.58,5.5 C8.35,5.28,8.5,5.35,8.21,5.32 C8.09,5.35,7.97,5.49,7.96,5.67 C7.97,5.79,7.98,5.92,7.98,6.04 L7.98,6.04 C7.99,6.17,8,6.31,8.01,6.43 L8.01,6.44 C8.03,6.92,8.06,7.41,8.09,7.9 L8.09,7.9 C8.12,8.39,8.14,8.88,8.17,9.37 C8.17,9.39,8.18,9.42,8.2,9.44 C8.23,9.46,8.25,9.47,8.28,9.47 C8.31,9.47,8.34,9.46,8.35,9.44 C8.37,9.43,8.38,9.4,8.39,9.35 L8.39,9.34 C8.39,9.24,8.4,9.15,8.4,9.05 L8.4,9.05 C8.41,8.96,8.41,8.86,8.42,8.75 C8.43,8.44,8.45,8.12,8.47,7.81 L8.47,7.81 C8.49,7.49,8.51,7.18,8.53,6.87 C8.55,6.46,8.56,6.05,8.59,5.64 L8.6,5.62 C8.6,5.57,8.59,5.53,8.58,5.5 L8.21,5.32 Z"/>
+      <circle fill="white" stroke="white" cx="8.3" cy="11.35" r="0.3"/>
+    </svg>
+    <p id="warn-connection-message">You are offline. Trying to reconnect...</p>
+  </div>
+</div>
 
 <script>
-/* =============================================================
-   HELPERS
-   ============================================================= */
-const BG = 'assets/backgrounds/';
-const SL = 'assets/slides/';
+  (function() {
+    window.DS.connection = {
+      warningShown: false,
+      assets: {},
+      loadingAssetGroup: false,
+      retryDelay: 500
+    };
 
-function blt(id, text, extraStyle) {
-  return `<div class="blt" id="${id}" style="${extraStyle||''}">• ${text}</div>`;
-}
-function showBlt(id, dimDelay) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add('in');
-  setTimeout(() => el.classList.add('dim'), dimDelay || 600);
-}
-function showBlk(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('in');
-}
+    var connectionSettings = window.globals.connectionSettings || {};
 
-/* =============================================================
-   SLIDE DEFINITIONS
-   Each slide: { bg, build(div), clicks:[], quiz:{} }
-   ============================================================= */
-const SLIDES = [
+    var useConnectionMessages = window.AbortController != null &&
+      window.location.protocol != 'file:' &&
+      connectionSettings.mode === 'normal';
 
-/* ── 0: Title ─────────────────────────────────────────────── */
-{
-  bg: BG+'Slide2.PNG',
-  build(d) {},
-  clicks: []
-},
+    window.DS.connection.useConnectionMessages = useConnectionMessages;
 
-/* ── 1: Why Make a Pizza? ──────────────────────────────────── */
-/* 2 sections. Bg has waiter + pizza photo baked in.
-   Section 1: heading + para floats in together (click 1)
-   Section 2: heading floats in (click 2), then 3 bullets one by one (clicks 3-5) */
-{
-  bg: BG+'Slide3.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:3%;top:3%;right:3%">
-      <div class="t-title" style="color:#fff;font-weight:300">Why Make a Pizza?</div>
-    </div>
-    <div style="position:absolute;left:32%;top:20%;right:4%;width:55%">
+    var assetCount = 0;
+    var checkLoadedId;
 
-      <div class="blk" id="s1-sec1">
-        <div style="font-size:1.8vw;font-weight:700;color:#e05c30;margin-bottom:1.5%">Pizza is VERY popular.</div>
-        <div class="t-body" style="color:#ddd;margin-bottom:4%">Approximately 3 BILLION pizzas are sold in the U.S. each year. Americans eat approximately 100 acres of pizza EACH DAY, or about 350 slices per second!*</div>
-      </div>
 
-      <div class="blk" id="s1-sec2h">
-        <div style="font-size:1.8vw;font-weight:700;color:#e05c30;margin-bottom:2%">Pizza is easy to make.</div>
-      </div>
+    if (useConnectionMessages && connectionSettings != null) {
+      var contentEl = document.querySelector('.warn-connection-content');
+      var messageEl = contentEl.querySelector('p');
 
-      <div class="blt t-body" id="s1-b1">The ingredients are readily available</div>
-      <div class="blt t-body" id="s1-b2" style="margin-top:.8%">Even if you make it from scratch, can be ready in an hour</div>
-      <div class="blt t-body" id="s1-b3" style="margin-top:.8%">The recipe is not complicated</div>
-    </div>
-    <div style="position:absolute;bottom:1%;right:2%;font-size:.9vw;color:#888;font-style:italic">*http://roccosgrandblanc.com/pizza-facts/</div>`;
-  },
-  clicks: [
-    () => showBlk('s1-sec1'),
-    () => showBlk('s1-sec2h'),
-    () => showBlt('s1-b1'),
-    () => showBlt('s1-b2'),
-    () => showBlt('s1-b3'),
-  ]
-},
-
-/* ── 2: Let's start with some questions ────────────────────── */
-/* Background has pizza + circular diagram baked in.
-   Title + 5 question items animate in as two groups by section.
-   Click 1: title + top 2 items (Quantity + Safety) which are top of the arc
-   Click 2: remaining 3 items (Style, Occasion, Equipment) */
-{
-  bg: BG+'Slide4.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;top:2%;right:2%">
-      <div class="t-hero" style="font-weight:300;color:#fff">Let&rsquo;s start with some questions</div>
-    </div>
-    <div style="position:absolute;left:52%;top:16%;right:3%;width:44%">
-      <div class="blk" id="s2-g1">
-        <div style="margin-bottom:3%">
-          <div style="font-size:1.5vw;font-weight:700;color:#e05c30;margin-bottom:.5%">Quantity</div>
-          <div class="t-small">How many people will be served by the pizza you&rsquo;re making? You can&rsquo;t satisfy everyone, unless there&rsquo;s enough pizza to go around!</div>
-        </div>
-        <div style="margin-bottom:3%">
-          <div style="font-size:1.5vw;font-weight:700;color:#e05c30;margin-bottom:.5%">Safety</div>
-          <div class="t-small">Do any of those people have food allergies or preferences? If those being served have difficulties with dairy or gluten, or if they are vegetarian or vegan, you should find out ahead of time.</div>
-        </div>
-      </div>
-      <div class="blk" id="s2-g2">
-        <div style="margin-bottom:3%">
-          <div style="font-size:1.5vw;font-weight:700;color:#e05c30;margin-bottom:.5%">Style</div>
-          <div class="t-small">Do you have a particular style of pizza in mind? <em>(Like Hawaiian, thin crust, Chicago-style, New-York style, etc.)</em> Each of these styles requires different kinds of ingredients.</div>
-        </div>
-        <div style="margin-bottom:3%">
-          <div style="font-size:1.5vw;font-weight:700;color:#e05c30;margin-bottom:.5%">Occasion</div>
-          <div class="t-small">Is the pizza for a special occasion, like a birthday? If so, you might want to decorate it in a special way!</div>
-        </div>
-        <div>
-          <div style="font-size:1.5vw;font-weight:700;color:#e05c30;margin-bottom:.5%">Equipment</div>
-          <div class="t-small">Do you have access to a kitchen, or an oven capable of cooking the pizza?</div>
-        </div>
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => showBlk('s2-g1'),
-    () => showBlk('s2-g2'),
-  ]
-},
-
-/* ── 3: How much pizza to make? (table + wheel cols) ────────── */
-{
-  bg: BG+'Slide5.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;top:3%;left:0;right:0;text-align:center">
-      <div class="t-hero" style="font-weight:300">How much pizza to make?</div>
-    </div>
-
-    <!-- Left sidebar text -->
-    <div class="blk" id="s3-left" style="position:absolute;left:2%;top:26%;width:21%">
-      <div class="t-small" style="color:#fff;margin-bottom:4%">This chart should give you a rough idea about how much pizza you will need for your occasion.</div>
-      <div class="t-small t-teal" style="margin-bottom:4%">The number of pizza servings in the last column can be multiplied by the number of people you plan to make pizza for.</div>
-      <div class="t-small t-yellow">For instance, if you make 3 14&rdquo; pizzas, you will have about 30 slices. This should serve between 12 and 15 people.</div>
-    </div>
-
-    <!-- Table: red + green cols always visible (show with sidebar click) -->
-    <div class="blk" id="s3-table" style="position:absolute;left:24%;top:21%;right:2%;bottom:8%;display:flex;gap:.5%">
-
-      <!-- Col 1: Red - Pizza size -->
-      <div style="flex:1;display:flex;flex-direction:column">
-        <div style="background:#c0392b;padding:2% 3%;font-size:1.3vw;font-weight:700;color:#fff;text-align:center;line-height:1.25;flex-shrink:0">Pizza size<br>in inches</div>
-        <div style="flex:1;display:flex;flex-direction:column">
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">8-10&rdquo;</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">12&rdquo;</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(90,70,0,.6);border:2px solid #FFE000;font-size:1.3vw;color:#fff;font-weight:700">14&rdquo;</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">16&rdquo;</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);font-size:1.3vw;color:#fff">18&rdquo;</div>
-        </div>
-      </div>
-
-      <!-- Col 2: Yellow/amber - Slices (WHEEL IN on click 2) -->
-      <div class="wheel-col" id="s3-col-yellow" style="flex:1;display:flex;flex-direction:column">
-        <div style="background:#d4860a;padding:2% 3%;font-size:1.3vw;font-weight:700;color:#fff;text-align:center;line-height:1.25;flex-shrink:0">Number of<br>Pizza Slices</div>
-        <div style="flex:1;display:flex;flex-direction:column">
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">6</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">8</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(90,70,0,.6);border:2px solid #FFE000;font-size:1.3vw;color:#fff;font-weight:700">10</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">12</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);font-size:1.3vw;color:#fff">14</div>
-        </div>
-      </div>
-
-      <!-- Col 3: Teal - Price (WHEEL IN on click 3) -->
-      <div class="wheel-col" id="s3-col-teal" style="flex:1;display:flex;flex-direction:column">
-        <div style="background:#1a7a6e;padding:2% 3%;font-size:1.3vw;font-weight:700;color:#fff;text-align:center;line-height:1.25;flex-shrink:0">Price per Pizza<br>(Average)</div>
-        <div style="flex:1;display:flex;flex-direction:column">
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">$7.99-8.99</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">$10.99</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(90,70,0,.6);border:2px solid #FFE000;font-size:1.3vw;color:#fff;font-weight:700">$13.49</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">$14.99</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);font-size:1.3vw;color:#fff">$16.49</div>
-        </div>
-      </div>
-
-      <!-- Col 4: Dark green - Servings -->
-      <div style="flex:1;display:flex;flex-direction:column">
-        <div style="background:#1a6645;padding:2% 3%;font-size:1.3vw;font-weight:700;color:#fff;text-align:center;line-height:1.25;flex-shrink:0">Number of<br>Pizza Servings</div>
-        <div style="flex:1;display:flex;flex-direction:column">
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">2-3</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">3-4</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(90,70,0,.6);border:2px solid #FFE000;font-size:1.3vw;color:#fff;font-weight:700">4-5</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.1);font-size:1.3vw;color:#fff">5-6</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);font-size:1.3vw;color:#fff">6-8</div>
-        </div>
-      </div>
-
-    </div>
-    <div style="position:absolute;bottom:1.5%;left:0;right:0;text-align:center;font-size:1.2vw;color:#ccc;font-style:italic">A good serving size for the average adult is 2-3 slices.</div>`;
-  },
-  clicks: [
-    () => { showBlk('s3-left'); showBlk('s3-table'); },
-    () => { document.getElementById('s3-col-teal').classList.add('in'); },
-    () => { document.getElementById('s3-col-yellow').classList.add('in'); },
-  ]
-},
-
-/* ── 4: Steps 01 – Gathering the ingredients ────────────────── */
-{
-  bg: BG+'Slide6.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:5%;width:32%">
-      <div style="font-size:4.5vw;font-weight:300;color:#fff;line-height:1.1">Steps in<br>Making<br>Pizza</div>
-    </div>
-    <div style="position:absolute;left:38%;top:8%;right:3%">
-      <div class="step-row step-active">
-        <div class="step-num">01</div>
-        <div class="step-text">
-          <div class="step-head">Gathering the ingredients</div>
-          <div class="step-desc" style="color:#ddd">Now that you know who and how many, it&rsquo;s time to collect all the fresh ingredients that will make your pizza super tasty.</div>
-        </div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 5: Materials Necessary (11 items, 2 sections) ──────────── */
-{
-  bg: BG+'Slide7.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;right:3%;top:5%;width:52%">
-      <div style="font-size:3.2vw;font-weight:700;color:#fff;letter-spacing:.4em;line-height:1">MATERIALS</div>
-      <div style="font-size:2.4vw;font-weight:700;color:#e05c30;letter-spacing:.4em;margin-bottom:4%">NECESSARY</div>
-      <div class="blk" id="s5-ing">
-        <div class="blt t-subhd" id="s5-b0" style="color:#FFE000;margin-bottom:1.2%">• Pizza dough <em style="color:#4a90d9">(get a homemade recipe)</em></div>
-        <div class="blt t-subhd" id="s5-b1" style="color:#FFE000;margin-bottom:1.2%">• Pizza sauce <em style="color:#4a90d9">(get a homemade recipe)</em></div>
-        <div class="blt t-subhd" id="s5-b2" style="color:#FFE000;margin-bottom:1.2%">• 1 to 2 cups of cheese</div>
-        <div class="blt t-subhd" id="s5-b3" style="color:#FFE000;margin-bottom:1.2%">• Any pizza toppings that you like</div>
-        <div class="blt t-subhd" id="s5-b4" style="color:#FFE000;margin-bottom:3%">• Any sides you&rsquo;d like</div>
-      </div>
-      <div class="blk" id="s5-eq">
-        <div class="blt t-subhd" id="s5-b5" style="color:#FFE000;margin-bottom:1.2%">• Oven</div>
-        <div class="blt t-subhd" id="s5-b6" style="color:#FFE000;margin-bottom:1.2%">• Bowl</div>
-        <div class="blt t-subhd" id="s5-b7" style="color:#FFE000;margin-bottom:1.2%">• Spatula</div>
-        <div class="blt t-subhd" id="s5-b8" style="color:#FFE000;margin-bottom:1.2%">• Plastic wrap</div>
-        <div class="blt t-subhd" id="s5-b9" style="color:#FFE000;margin-bottom:1.2%">• Pan</div>
-        <div class="blt t-subhd" id="s5-b10" style="color:#FFE000">• Stove <em style="color:#ddd">(for homemade pizza sauce)</em></div>
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => showBlk('s5-ing'),
-    () => showBlk('s5-eq'),
-  ]
-},
-
-/* ── 6: Materials (dimmed + multiply callout) ───────────────── */
-{
-  bg: BG+'Slide8.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;right:3%;top:5%;width:52%;opacity:.22">
-      <div style="font-size:3.2vw;font-weight:700;color:#fff;letter-spacing:.4em;line-height:1">MATERIALS</div>
-      <div style="font-size:2.4vw;font-weight:700;color:#e05c30;letter-spacing:.4em;margin-bottom:4%">NECESSARY</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Pizza dough</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Pizza sauce</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• 1 to 2 cups of cheese</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Any pizza toppings that you like</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Any sides you&rsquo;d like</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Oven</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Bowl</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Spatula</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Plastic wrap</div>
-      <div class="t-subhd" style="color:#fff;margin-bottom:1.2%">• Pan</div>
-      <div class="t-subhd" style="color:#fff">• Stove <em>(for homemade pizza sauce)</em></div>
-    </div>
-    <div style="position:absolute;left:10%;top:28%;width:45%;text-align:center">
-      <div style="font-size:2.2vw;font-weight:700;color:#FFE000;line-height:1.35">Don&rsquo;t forget to multiply the quantities of your ingredients by the number of pizzas you plan to make!</div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 7: Recipe ──────────────────────────────────────────────── */
-{
-  bg: BG+'Slide9.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;top:3%;right:52%;bottom:3%">
-      <div style="font-size:1.5vw;font-weight:700;color:#FFE000;margin-bottom:3%">A SAMPLE QUICK AND EASY PIZZA RECIPE</div>
-      <div style="font-size:1.5vw;font-weight:700;color:#FFE000;margin-bottom:2%;text-align:center">Recipe Ingredients</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">1 lb. pepperoni</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">1 prepared pizza crust (12-inch)</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">1 can tomato sauce (8 oz)</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">1/4 teaspoon crushed dried basil leaves</div>
-      <div class="t-body" style="color:#fff;margin-bottom:4%">1 pkg. shredded mozzarella cheese (8 oz)</div>
-      <div style="font-size:1.5vw;font-weight:700;color:#FFE000;margin-bottom:2%;text-align:center">Instructions</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">1. Preheat oven to 450F.</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">2. Place pizza crust on a large baking sheet.</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">3. Combine tomato sauce, basil, and oregano. Spread tomato sauce evenly over pizza.</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">4. Sprinkle a layer of cheese.</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">5. Distribute pepperoni evenly around pizza crust.</div>
-      <div class="t-body" style="color:#fff;margin-bottom:.8%">6. Bake 10-12 minutes or until cheese is melted and lightly golden</div>
-      <div class="t-body" style="color:#fff">7. Remove from oven, slice, and serve.</div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 8: Steps 01+02 ─────────────────────────────────────────── */
-{
-  bg: BG+'Slide10.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:5%;width:32%">
-      <div style="font-size:4.5vw;font-weight:300;color:#fff;line-height:1.1">Steps in<br>Making<br>Pizza</div>
-    </div>
-    <div style="position:absolute;left:38%;top:6%;right:3%">
-      <div class="step-row step-done" style="margin-bottom:6%">
-        <div class="step-num">01</div>
-        <div class="step-text">
-          <div class="step-head">Gathering the ingredients</div>
-          <div class="step-desc">Now that you know who and how many, it&rsquo;s time to collect all the fresh ingredients that will make your pizza super tasty.</div>
-        </div>
-      </div>
-      <div class="step-row step-active">
-        <div class="step-num">02</div>
-        <div class="step-text">
-          <div class="step-head">Preparing to create</div>
-          <div class="step-desc" style="color:#ddd">Now that you have your ingredients, you&rsquo;ll need to get the kitchen ready &ndash; as well as yourself.</div>
-        </div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 9: Safety in the Kitchen (7 bullets, one by one) ─────────── */
-{
-  bg: BG+'Slide11.PNG',
-  build(d) {
-    const bullets = [
-      'Always stay in the kitchen while using the stove. Turn off the stove if you leave the room.',
-      'Always turn pot handles toward the back of the stove and use the back burners whenever possible.',
-      'Roll up sleeves before cooking. Loose-fitting clothing can catch on fire.',
-      'Clean the stove, oven and burners regularly to prevent grease buildup.',
-      'Keep items that can catch on fire, such as dish towels and potholders, away from the stove.',
-      'If a smoke alarm sounds during normal cooking, open a door or fan the area. Do not disable the smoke alarm or take out the batteries.',
-      'Always wash hands before touching food. Avoid wearing nail polish while manipulating ingredients, such as kneading dough.'
-    ];
-    let html = `
-    <div style="position:absolute;left:2%;top:6%;width:33%">
-      <div style="font-size:3.2vw;font-weight:400;color:#e05c30;line-height:1.1;margin-bottom:3%">Safety in the Kitchen</div>
-      <div class="box-dark" style="padding:3% 4%">
-        <div class="t-body" style="color:#fff">A few simple rules can ensure that the food turns out great, and that no one gets hurt.</div>
-      </div>
-    </div>
-    <div style="position:absolute;left:42%;top:6%;right:2%;bottom:4%;display:flex;flex-direction:column;justify-content:space-between">`;
-    bullets.forEach((b,i) => {
-      html += `<div class="blt t-body" id="s9-b${i}" style="padding-left:1.2em;text-indent:-1.2em">&#8226; ${b}</div>`;
-    });
-    html += `</div>`;
-    d.innerHTML += html;
-  },
-  clicks: Array.from({length:7}, (_,i) => () => showBlt(`s9-b${i}`))
-},
-
-/* ── 10: Preheat the oven ───────────────────────────────────── */
-{
-  bg: BG+'Slide12.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;top:4%">
-      <div class="t-title" style="font-weight:300">Preheat the oven</div>
-    </div>
-    <div style="position:absolute;left:38%;bottom:4%;right:3%;width:58%">
-      <div class="box-dark" style="padding:4% 5%">
-        <div style="font-size:1.6vw;font-weight:700;color:#FFE000;margin-bottom:2%">How hot should the oven be?</div>
-        <div class="t-body" style="color:#fff">Generally, the hotter the oven, the better the pizza will be. The best oven temperature for pizza is between 450 and 500 degrees F (250 to 260 degrees C). Pizza ovens cook at temperatures between 800 and 900 degrees F. You can&rsquo;t get that hot in your home oven, but the higher you can go, the better.</div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 11: Prepare any pans (paragraph + 3 steps) ─────────────── */
-{
-  bg: BG+'Slide13.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:4%">
-      <div class="t-title" style="font-weight:300;color:#fff">Prepare any pans</div>
-    </div>
-    <div style="position:absolute;left:37%;top:4%;right:3%;width:60%;bottom:14%">
-      <div class="blk box-dark" id="s11-para" style="padding:3% 4%;margin-bottom:4%">
-        <div style="font-size:1.5vw;font-weight:700;color:#FFE000;margin-bottom:2%">What kind of pizza pan should I use?</div>
-        <div class="t-body" style="color:#ddd;font-style:italic">You can cook pizza in any kind of pan that can stand up to the extreme heat of the oven. There is the traditional round, flat pan (sometimes with holes) that you&rsquo;ve probably seen on tv or in the movies. But this isn&rsquo;t the only type of pan for pizza. Cast iron (non-enameled) also produces a tasty pizza crust. And, of course, thick crust pizza might require a deeper, rectangular roasting pan to contain all that goodness!</div>
-      </div>
-      <div class="blt t-body" id="s11-s0" style="color:#FFE000;margin-bottom:2%;padding-left:1.5em;text-indent:-1.5em">1. Pour a tablespoon of cooking oil on the surface of the pizza pan.</div>
-      <div class="blt t-body" id="s11-s1" style="color:#FFE000;margin-bottom:2%;padding-left:1.5em;text-indent:-1.5em">2. Use a paper towel or basting brush to coat the entire surface of the pan with the oil.</div>
-      <div class="blt t-body" id="s11-s2" style="color:#FFE000;padding-left:1.5em;text-indent:-1.5em">3. Sprinkle a tablespoon or two of cornmeal over the oil on the pan. This will ensure the pizza dough does not stick to the pan and give the dough a traditional feel after cooking.</div>
-    </div>`;
-  },
-  clicks: [
-    () => showBlk('s11-para'),
-    () => showBlt('s11-s0'),
-    () => showBlt('s11-s1'),
-    () => showBlt('s11-s2'),
-  ]
-},
-
-/* ── 12: Steps 01+02+03 ─────────────────────────────────────── */
-{
-  bg: BG+'Slide14.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:5%;width:32%">
-      <div style="font-size:4.5vw;font-weight:300;color:#fff;line-height:1.1">Steps in<br>Making<br>Pizza</div>
-    </div>
-    <div style="position:absolute;left:38%;top:4%;right:3%">
-      <div class="step-row step-done" style="margin-bottom:4%">
-        <div class="step-num">01</div>
-        <div class="step-text">
-          <div class="step-head">Gathering the ingredients</div>
-          <div class="step-desc">Now that you know who and how many, it&rsquo;s time to collect all the fresh ingredients that will make your pizza super tasty.</div>
-        </div>
-      </div>
-      <div class="step-row step-done" style="margin-bottom:4%">
-        <div class="step-num">02</div>
-        <div class="step-text">
-          <div class="step-head">Preparing to create</div>
-          <div class="step-desc">Now that you have your ingredients, you&rsquo;ll need to get the kitchen ready &ndash; as well as yourself.</div>
-        </div>
-      </div>
-      <div class="step-row step-active">
-        <div class="step-num">03</div>
-        <div class="step-text">
-          <div class="step-head">Assembling the pizza</div>
-          <div class="step-desc" style="color:#ddd">Now you&rsquo;re ready to blend everything together into your masterpiece!</div>
-        </div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 13: Kneading the dough (4 bullets) ─────────────────────── */
-{
-  bg: BG+'Slide15.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;right:3%;top:5%;width:55%">
-      <div class="t-title" style="font-weight:300;margin-bottom:5%">Kneading the dough</div>
-    </div>
-    <div style="position:absolute;right:3%;top:18%;width:55%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around">
-      <div class="blt t-body" id="s13-b0" style="padding-left:1.2em;text-indent:-1.2em">&#8226; Make sure you&rsquo;re kneading on a well-floured surface. That way you don&rsquo;t have to worry about your dough sticking to your bench or your hands.</div>
-      <div class="blt t-body" id="s13-b1" style="padding-left:1.2em;text-indent:-1.2em">&#8226; One of the signs that your dough is ready is that it will be completely smooth after kneading it.</div>
-      <div class="blt t-body" id="s13-b2" style="padding-left:1.2em;text-indent:-1.2em">&#8226; Your dough will be shaggy and lumpy to begin with, but once you&rsquo;ve kneaded it for a while it should be smooth and slightly tacky to touch.</div>
-      <div class="blt t-body" id="s13-b3" style="padding-left:1.2em;text-indent:-1.2em">&#8226; An easy way of checking if your dough is kneaded enough is to simply poke it. If the hole where your finger was bounces back quickly, it&rsquo;s a good indicator your dough is ready to go.</div>
-    </div>`;
-  },
-  clicks: Array.from({length:4}, (_,i) => () => showBlt(`s13-b${i}`))
-},
-
-/* ── 14: Spreading the sauce (4 bullets) ────────────────────── */
-{
-  bg: BG+'Slide16.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;right:2%;top:4%">
-      <div class="t-title" style="font-weight:300;text-align:right">Spreading the sauce</div>
-    </div>
-    <div style="position:absolute;left:2%;top:16%;right:52%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around">
-      <div class="blk box-dark" id="s14-box" style="padding:3% 4%">
-        <div class="blt t-body" id="s14-b0" style="margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Check your sauce consistency to make sure it will spread well but not make your pizza soggy. Perfect pizza sauce is about as thick as ketchup.</div>
-        <div class="blt t-body" id="s14-b1" style="margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Drop two or three scoops of pizza sauce directly onto the center of the crust. Keep the sauce in one small area in the middle by dropping the second spoonful right on top of the first, then the third on top of the second.</div>
-        <div class="blt t-body" id="s14-b2" style="margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Grasp the spoon about halfway down the handle toward the bowl. Set the bowl of the spoon into the center of the sauce.</div>
-        <div class="blt t-body" id="s14-b3" style="padding-left:1.2em;text-indent:-1.2em">&#8226; Move the bowl of the spoon in a spiral, farther and farther out from the center of the dough toward the outer edge.</div>
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => { showBlk('s14-box'); showBlt('s14-b0'); },
-    () => showBlt('s14-b1'),
-    () => showBlt('s14-b2'),
-    () => showBlt('s14-b3'),
-  ]
-},
-
-/* ── 15: Adding the toppings (2 sections) ───────────────────── */
-{
-  bg: BG+'Slide17.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;right:2%;top:4%">
-      <div class="t-title" style="font-weight:300;text-align:right">Adding the toppings</div>
-    </div>
-    <div class="blk box-dark" id="s15-instruct" style="position:absolute;left:36%;top:18%;width:34%;padding:3% 4%">
-      <div class="t-body" style="color:#fff;margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Sprinkle an even layer of shredded mozzarella cheese (and/or other types of cheeses) over the sauce. The amount of cheese depends on your personal taste.</div>
-      <div class="t-body" style="color:#fff;margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Add pizza toppings on top of the cheese. Cut all the toppings a similar size and place them in an even layer over the surface of the pizza.</div>
-      <div class="t-body" style="color:#fff;padding-left:1.2em;text-indent:-1.2em">&#8226; If it&rsquo;s a special occasion, you might spell &ldquo;Happy Birthday&rdquo; with some of the ingredients!</div>
-    </div>
-    <div class="blk" id="s15-toppings" style="position:absolute;right:2%;top:16%;width:27%">
-      <div style="font-size:1.4vw;font-style:italic;font-weight:700;color:#FFE000;margin-bottom:3%">Suggested Pizza Toppings</div>
-      <div style="display:flex;flex-direction:column;gap:.8%">
-        ${['Pepperoni','Sausage','Mushrooms','Bacon','Onions','Extra Cheese','Peppers','Chicken','Olives','Spinach','Tomato and Basil','Beef','Ham','Pesto','Spicy Pork','Ham and Pineapple'].map(t=>`<div style="font-size:1.2vw;color:#FFE000">${t}</div>`).join('')}
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => showBlk('s15-instruct'),
-    () => showBlk('s15-toppings'),
-  ]
-},
-
-/* ── 16: Steps 01+02+03+04 ──────────────────────────────────── */
-{
-  bg: BG+'Slide18.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:5%;width:32%">
-      <div style="font-size:4.5vw;font-weight:300;color:#fff;line-height:1.1">Steps in<br>Making<br>Pizza</div>
-    </div>
-    <div style="position:absolute;left:38%;top:2%;right:3%">
-      <div class="step-row step-done" style="margin-bottom:2.5%">
-        <div class="step-num">01</div>
-        <div class="step-text">
-          <div class="step-head">Gathering the ingredients</div>
-          <div class="step-desc">Now that you know who and how many, it&rsquo;s time to collect all the fresh ingredients that will make your pizza super tasty.</div>
-        </div>
-      </div>
-      <div class="step-row step-done" style="margin-bottom:2.5%">
-        <div class="step-num">02</div>
-        <div class="step-text">
-          <div class="step-head">Preparing to create</div>
-          <div class="step-desc">Now that you have your ingredients, you&rsquo;ll need to get the kitchen ready &ndash; as well as yourself.</div>
-        </div>
-      </div>
-      <div class="step-row step-done" style="margin-bottom:2.5%">
-        <div class="step-num">03</div>
-        <div class="step-text">
-          <div class="step-head">Assembling the pizza</div>
-          <div class="step-desc">Now you&rsquo;re ready to blend everything together into your masterpiece!</div>
-        </div>
-      </div>
-      <div class="step-row step-active">
-        <div class="step-num">04</div>
-        <div class="step-text">
-          <div class="step-head">Cooking the pizza</div>
-          <div class="step-desc" style="color:#ddd">Into the oven it goes!</div>
-        </div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 17: Putting pizza in the oven (3 bullets) ──────────────── */
-{
-  bg: BG+'Slide19.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;right:2%;top:4%;width:62%">
-      <div class="t-title" style="font-weight:300;text-align:right">Putting pizza in the oven</div>
-    </div>
-    <div style="position:absolute;right:2%;top:18%;width:62%;bottom:4%">
-      <div class="box-dark" style="padding:3% 4%">
-        <div style="font-size:1.6vw;font-weight:700;color:#FFE000;text-align:center;margin-bottom:3%">Remember that the oven will be very hot!</div>
-        <div class="blt t-body" id="s17-b0" style="margin-bottom:2.5%;text-align:center">Using oven mitts or other protective gear, place the pizza on the center rack for an evenly done pizza.</div>
-        <div class="blt t-body" id="s17-b1" style="margin-bottom:2.5%;text-align:center">If you like your pizza crispier on the bottom, you can put it on the lower rack (or adjust your rack if you only have one.) <em>You may have to adjust your cooking time with this option to avoid burning.</em></div>
-        <div class="blt t-body" id="s17-b2" style="text-align:center">Set a timer, based on the size and thickness of your pizza. <em>Usually this will be somewhere around <span style="color:#FFE000">20-25 minutes</span>.</em></div>
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => { document.getElementById('s17-b0').classList.add('in'); setTimeout(()=>document.getElementById('s17-b0').classList.add('dim'),600); },
-    () => { document.getElementById('s17-b1').classList.add('in'); setTimeout(()=>document.getElementById('s17-b1').classList.add('dim'),600); },
-    () => { document.getElementById('s17-b2').classList.add('in'); setTimeout(()=>document.getElementById('s17-b2').classList.add('dim'),600); },
-  ]
-},
-
-/* ── 18: While it's cooking #1 (3 bullets) ──────────────────── */
-{
-  bg: BG+'Slide20.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;top:4%">
-      <div class="t-title" style="font-weight:300">While it&rsquo;s cooking</div>
-    </div>
-    <div style="position:absolute;left:2%;top:18%;right:52%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around">
-      <div class="blk box-dark" id="s18-box" style="padding:4% 5%">
-        <div class="blt t-body" id="s18-b0" style="color:#fff;margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Now you can be preparing any sides to go with your pizza, like spinach artichoke dip, potato salad, garlic cheese bread, mozzarella sticks or chicken wings with blue cheese dip.</div>
-        <div class="blt t-body" id="s18-b1" style="color:#fff;margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; This is also a good time to set the table, get drinks ready, and prepare decorations, if appropriate.</div>
-        <div class="blt t-body" id="s18-b2" style="color:#fff;padding-left:1.2em;text-indent:-1.2em">&#8226; You can also use this time to clean the kitchen area. When the pizza comes out, you&rsquo;ll be ready to sit down and enjoy with everyone else!</div>
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => { showBlk('s18-box'); showBlt('s18-b0'); },
-    () => showBlt('s18-b1'),
-    () => showBlt('s18-b2'),
-  ]
-},
-
-/* ── 19: While it's cooking #2 (3 bullets) ──────────────────── */
-{
-  bg: BG+'Slide21.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:4%">
-      <div class="t-title" style="font-weight:300">While it&rsquo;s cooking</div>
-    </div>
-    <div style="position:absolute;left:2%;top:18%;right:52%;bottom:14%;display:flex;flex-direction:column;justify-content:space-around">
-      <div class="blk box-dark" id="s19-box" style="padding:4% 5%">
-        <div class="blt t-body" id="s19-b0" style="color:#fff;margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Don&rsquo;t get too distracted while you&rsquo;re waiting for the pizza to cook, however.</div>
-        <div class="blt t-body" id="s19-b1" style="color:#fff;margin-bottom:3%;padding-left:1.2em;text-indent:-1.2em">&#8226; Check periodically to see if the pizza is cooking to your taste.</div>
-        <div class="blt t-body" id="s19-b2" style="color:#fff;padding-left:1.2em;text-indent:-1.2em">&#8226; This is especially important as the timer nears its ending time.</div>
-      </div>
-    </div>`;
-  },
-  clicks: [
-    () => { showBlk('s19-box'); showBlt('s19-b0'); },
-    () => showBlt('s19-b1'),
-    () => showBlt('s19-b2'),
-  ]
-},
-
-/* ── 20: It's done! ─────────────────────────────────────────── */
-{
-  bg: BG+'Slide22.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;top:4%">
-      <div class="t-title" style="font-weight:300">It&rsquo;s done!</div>
-    </div>
-    <div style="position:absolute;right:2%;top:6%;width:50%;bottom:4%">
-      <div class="box-dark" style="padding:3% 4%">
-        <div class="t-body" style="color:#fff;text-align:center;margin-bottom:2%">Ensure that there is a clear, heat-proof counter nearby where the pizza can be placed.</div>
-        <div class="t-body" style="color:#fff;text-align:center;margin-bottom:2%">Using oven mitts or other protective gear, remove the pizza from the oven.</div>
-        <div style="font-size:1.5vw;font-weight:700;color:#FFE000;text-align:center;margin-bottom:2%;line-height:1.3">Remember that the oven and the pizza pan will be very hot!</div>
-        <div class="t-body" style="color:#fff;text-align:center">Set the pizza down gently, and slice to your satisfaction.</div>
-      </div>
-    </div>
-    <div style="position:absolute;right:3%;bottom:4%;width:32%">
-      <div style="background:#e05c30;border-radius:50%;width:100%;padding-top:100%;position:relative;clip-path:polygon(50% 0%,58% 35%,93% 15%,71% 45%,98% 50%,71% 55%,93% 85%,58% 65%,50% 100%,42% 65%,7% 85%,29% 55%,2% 50%,29% 45%,7% 15%,42% 35%)">
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20%">
-          <div style="font-size:1.5vw;font-weight:700;color:#fff;line-height:1.3">Don&rsquo;t forget to turn off the oven!</div>
-        </div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 21: Serve and enjoy! ───────────────────────────────────── */
-{
-  bg: BG+'Slide23.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;left:2%;bottom:6%">
-      <div class="box-dark" style="padding:1.5% 3%">
-        <div class="t-title" style="font-weight:300">Serve and enjoy!</div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 22: Review Questions (title only) ──────────────────────── */
-{
-  bg: BG+'Slide24.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;top:7%;left:0;right:0;text-align:center">
-      <div style="font-size:4vw;font-weight:700;color:#fff">Review Questions</div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 23: Quiz Q1 ─────────────────────────────────────────────── */
-{
-  bg: BG+'Slide25.PNG',
-  quiz: {
-    question: 'Why is it important to know who will be eating the pizza?',
-    options: [
-      { letter:'A', text:"If you're serving someone famous, you need to make a fancy pizza.", correct:false },
-      { letter:'B', text:'Some people have food allergies or are vegans or vegetarians.', correct:true },
-      { letter:'C', text:'Some people never eat home made pizza. They always order out.', correct:false },
-      { letter:'D', text:"You don't have to know who's eating the pizza.", correct:false },
-    ]
-  }
-},
-
-/* ── 24: Q1 Correct ─────────────────────────────────────────── */
-{
-  bg: BG+'Slide26.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;top:7%;left:0;right:0;text-align:center">
-      <div style="font-size:4vw;font-weight:700;color:#fff">Review Questions</div>
-    </div>
-    <div style="position:absolute;top:20%;left:5%;right:5%;color:#e05c30;font-size:1.8vw;font-weight:700;line-height:1.3;margin-bottom:3%">Why is it important to know who will be eating the pizza?</div>
-    <div style="position:absolute;top:36%;right:3%;width:48%">
-      <div style="border:1.5px solid rgba(180,180,180,.6);background:rgba(0,0,0,.55);display:flex;align-items:stretch;overflow:hidden">
-        <div style="background:rgba(30,30,30,.8);color:#fff;font-size:2.2vw;font-weight:700;width:5.5%;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2% 0">B</div>
-        <div style="color:#fff;font-size:1.35vw;padding:2% 3%;display:flex;align-items:center;line-height:1.3">Some people have food allergies or are vegans or vegetarians.</div>
-      </div>
-    </div>
-    <div style="position:absolute;left:5%;top:30%;width:42%">
-      <div class="box-dark" style="padding:3% 4%">
-        <div style="font-size:1.4vw;font-weight:700;color:#fff;line-height:1.4">You&rsquo;re right! Someone might have a severe allergy that could be triggered by a pizza ingredient. Safety first!</div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 25: Quiz Q2 ─────────────────────────────────────────────── */
-{
-  bg: BG+'Slide27.PNG',
-  quiz: {
-    question: 'What is the optimum temperature at which to cook a pizza?',
-    options: [
-      { letter:'A', text:'There is no optimum temperature. You should experiment to find one that you like.', correct:false },
-      { letter:'B', text:'300 degrees should do in most cases.', correct:false },
-      { letter:'C', text:'Anything under 400 degrees will get the job done.', correct:false },
-      { letter:'D', text:'The hotter the better. If your oven can get 500 degrees or more, you should do that.', correct:true },
-    ]
-  }
-},
-
-/* ── 26: Q2 Correct ─────────────────────────────────────────── */
-{
-  bg: BG+'Slide28.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;top:7%;left:0;right:0;text-align:center">
-      <div style="font-size:4vw;font-weight:700;color:#fff">Review Questions</div>
-    </div>
-    <div style="position:absolute;top:20%;left:5%;right:5%;color:#e05c30;font-size:1.8vw;font-weight:700;line-height:1.3;margin-bottom:3%">What is the optimum temperature at which to cook a pizza?</div>
-    <div style="position:absolute;top:36%;right:3%;width:48%">
-      <div style="border:1.5px solid rgba(180,180,180,.6);background:rgba(0,0,0,.55);display:flex;align-items:stretch;overflow:hidden">
-        <div style="background:rgba(30,30,30,.8);color:#fff;font-size:2.2vw;font-weight:700;width:5.5%;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2% 0">D</div>
-        <div style="color:#fff;font-size:1.35vw;padding:2% 3%;display:flex;align-items:center;line-height:1.3">The hotter the better. If your oven can get 500 degrees or more, you should do that.</div>
-      </div>
-    </div>
-    <div style="position:absolute;left:5%;top:30%;width:42%">
-      <div class="box-dark" style="padding:3% 4%">
-        <div style="font-size:1.4vw;font-weight:700;color:#fff;line-height:1.4">Get that oven hot! Professional pizza ovens can reach 1000 degrees, so turn up the heat!</div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 27: Quiz Q3 ─────────────────────────────────────────────── */
-{
-  bg: BG+'Slide29.PNG',
-  quiz: {
-    question: 'How many slices of pizza should an average adult be served?',
-    options: [
-      { letter:'A', text:'Between 2-3', correct:true },
-      { letter:'B', text:'Between 5-6', correct:false },
-      { letter:'C', text:'Between 8-10', correct:false },
-      { letter:'D', text:'A whole pizza', correct:false },
-    ]
-  }
-},
-
-/* ── 28: Q3 Correct ─────────────────────────────────────────── */
-{
-  bg: BG+'Slide30.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;top:7%;left:0;right:0;text-align:center">
-      <div style="font-size:4vw;font-weight:700;color:#fff">Review Questions</div>
-    </div>
-    <div style="position:absolute;top:20%;left:5%;right:5%;color:#e05c30;font-size:1.8vw;font-weight:700;line-height:1.3;margin-bottom:3%">How many slices of pizza should an average adult be served?</div>
-    <div style="position:absolute;top:36%;right:3%;width:48%">
-      <div style="border:1.5px solid rgba(180,180,180,.6);background:rgba(0,0,0,.55);display:flex;align-items:stretch;overflow:hidden">
-        <div style="background:rgba(30,30,30,.8);color:#fff;font-size:2.2vw;font-weight:700;width:5.5%;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:2% 0">A</div>
-        <div style="color:#fff;font-size:1.35vw;padding:2% 3%;display:flex;align-items:center;line-height:1.3">Between 2-3</div>
-      </div>
-    </div>
-    <div style="position:absolute;left:5%;top:30%;width:42%">
-      <div class="box-dark" style="padding:3% 4%">
-        <div style="font-size:1.4vw;font-weight:700;color:#fff;line-height:1.4">People love pizza, but a good serving for the average adult is between 2-3 slices.</div>
-      </div>
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 29: Sources ─────────────────────────────────────────────── */
-{
-  bg: BG+'Slide31.PNG',
-  build(d) {
-    const sources = [
-      'https://www.ehow.com/how_8179028_cook-pizza-cookie-sheet.html',
-      'https://www.ehow.com/how_8169278_spread-pizza-sauce.html',
-      'https://www.ehow.com/how_5180432_prepare-pizza-pan.html',
-      'https://www.owenssausage.com/recipes/quick-and-easy-pizza/#instructions',
-      'https://restaurantclicks.com/best-pizza-toppings/',
-      'https://greenlanternpizza.com/blog/how-to-make-homemade-pizza/',
-      'https://tasty.co/recipe/pizza-dough',
-      'https://www.11inchpizza.com.au/how-to-knead-pizza-dough-to-perfection/',
-      'http://roccosgrandblanc.com/pizza-facts/',
-      'https://www.freepik.com/',
-    ];
-    d.innerHTML += `
-    <div style="position:absolute;left:3%;top:4%">
-      <div class="t-title" style="font-weight:300">Sources</div>
-    </div>
-    <div style="position:absolute;left:28%;top:14%;right:4%;bottom:4%;display:flex;flex-direction:column;justify-content:space-around">
-      ${sources.map(s=>`<div><a href="${s}" target="_blank" rel="noopener" style="color:#4a90d9;font-size:1.1vw;text-decoration:underline;word-break:break-all">${s}</a></div>`).join('')}
-    </div>`;
-  },
-  clicks: []
-},
-
-/* ── 30: Thank You ───────────────────────────────────────────── */
-{
-  bg: BG+'Slide32.PNG',
-  build(d) {
-    d.innerHTML += `
-    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-      <div style="font-size:5.5vw;font-weight:700;color:#fff;letter-spacing:.1em;margin-bottom:2%">THANK YOU</div>
-      <div style="font-size:2vw;color:#ddd;font-style:italic">for your attention during this presentation.</div>
-    </div>`;
-  },
-  clicks: []
-},
-
-]; // end SLIDES
-
-/* =============================================================
-   ENGINE
-   ============================================================= */
-const stage = document.getElementById('stage');
-const ctr   = document.getElementById('counter');
-let cur = 0, step = 0, busy = false;
-
-function buildSlide(idx) {
-  const s = SLIDES[idx];
-  const div = document.createElement('div');
-  div.className = 'slide';
-  div.innerHTML = `<img class="bg" src="${s.bg||''}" alt="">`;
-
-  if (s.quiz) {
-    buildQuiz(div, idx, s.quiz);
-  } else if (s.build) {
-    s.build(div);
-  }
-  return div;
-}
-
-function buildQuiz(div, idx, q) {
-  div.innerHTML += `
-    <div style="position:absolute;top:7%;left:0;right:0;text-align:center">
-      <div style="font-size:4vw;font-weight:700;color:#fff">Review Questions</div>
-    </div>
-    <div style="position:absolute;top:20%;right:3%;width:46%">
-      <div class="quiz-q">${q.question}</div>
-      <div class="quiz-options" id="qopts-${idx}">
-        ${q.options.map((o,i)=>`
-          <div class="quiz-btn" id="qbtn-${idx}-${i}" data-correct="${o.correct}">
-            <div class="quiz-letter">${o.letter}</div>
-            <div class="quiz-text">${o.text}</div>
-          </div>`).join('')}
-      </div>
-    </div>
-    <div class="wrong-ov" id="qwrong-${idx}">That&rsquo;s not<br>correct.<br>Try again!</div>
-    <div class="correct-ov" id="qcorrect-${idx}">
-      <div class="starburst"></div>
-      <div class="correct-checkmark">&#10003;</div>
-    </div>`;
-}
-
-function wireQuiz(div, idx) {
-  const q = SLIDES[idx].quiz;
-  if (!q) return;
-  const wrong = div.querySelector(`#qwrong-${idx}`);
-  const correct = div.querySelector(`#qcorrect-${idx}`);
-  div.querySelectorAll('.quiz-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (btn.classList.contains('locked')) return;
-      if (btn.dataset.correct === 'true') {
-        btn.classList.add('correct');
-        div.querySelectorAll('.quiz-btn').forEach(b=>b.classList.add('locked'));
-        wrong.classList.remove('in');
-        correct.classList.add('in');
-        setTimeout(() => advance(), 800);
-      } else {
-        btn.classList.add('wrong');
-        wrong.classList.add('in');
-        setTimeout(() => {
-          btn.classList.remove('wrong');
-          wrong.classList.remove('in');
-        }, 1200);
+      if (connectionSettings.useDarkTheme) {
+        contentEl.style.borderColor = '#BABBBA';
+        contentEl.style.backgroundColor = '#282828';
+        contentEl.style.color = '#FFFFFF';
       }
-    });
-  });
-}
 
-function goTo(idx) {
-  if (busy || idx < 0 || idx >= SLIDES.length) return;
-  busy = true;
-  const incoming = buildSlide(idx);
-  stage.appendChild(incoming);
-  if (SLIDES[idx].quiz) wireQuiz(incoming, idx);
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    const out = stage.querySelector('.slide.active');
-    if (out) { out.classList.remove('active'); out.classList.add('leaving'); setTimeout(()=>out.remove(),500); }
-    incoming.classList.add('active');
-    cur = idx; step = 0;
-    updateCtr();
-    busy = false;
-  }));
-}
+      if (connectionSettings.message != null) {
+        messageEl.textContent = window.decodeURIComponent(connectionSettings.message);
+      }
+    }
 
-function advance() {
-  if (cur < SLIDES.length-1) goTo(cur+1);
-}
+    function checkAssetsReady() {
+      for (var i in DS.connection.assets) {
+        if (!DS.connection.assets[i].success) {
+          return false;
+        }
+      }
+      return true;
+    }
 
-function handleClick(e) {
-  if (e.target.closest('.quiz-btn') || e.target.closest('#nav-prev') || e.target.closest('#nav-next')) return;
-  const s = SLIDES[cur];
-  if (s.quiz) return;
-  const clicks = s.clicks||[];
-  if (step < clicks.length) { clicks[step](); step++; }
-}
+    function stopAssetGroup() {
+      if (!useConnectionMessages) { return; }
 
-function updateCtr() { ctr.textContent = `${cur+1} / ${SLIDES.length}`; }
+      assetCount = 0;
 
-document.getElementById('nav-next').addEventListener('click', e => {
-  e.stopPropagation();
-  const s = SLIDES[cur];
-  if (!s.quiz && step < (s.clicks||[]).length) { (s.clicks||[])[step](); step++; }
-  else advance();
-});
-document.getElementById('nav-prev').addEventListener('click', e => {
-  e.stopPropagation();
-  if (cur > 0) goTo(cur-1);
-});
-document.addEventListener('keydown', e => {
-  if (e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); document.getElementById('nav-next').click(); }
-  if (e.key==='ArrowLeft') { e.preventDefault(); if(cur>0)goTo(cur-1); }
-});
-stage.addEventListener('click', handleClick);
+      DS.connection.oldAssetGroup = DS.connection.assets;
+      DS.connection.assets = {};
+      DS.connection.loadingAssetGroup = false;
+      clearInterval(checkLoadedId);
+    }
 
-// Preload next bg
-function preload(idx) {
-  const s = SLIDES[idx];
-  if (s && s.bg) { const i=new Image(); i.src=s.bg; }
-}
+    function startAssetGroup() {
+      if (!useConnectionMessages) { return; }
+      var ticks = 0;
+      clearInterval(checkLoadedId);
+      checkLoadedId = setInterval(function() {
+        var loaded = 0;
+        if (assetCount === 0 && loaded === 0) {
+          clearInterval(checkLoadedId);
+          return;
+        }
 
-// Init
-const first = buildSlide(0);
-stage.appendChild(first);
-if (SLIDES[0].quiz) wireQuiz(first, 0);
-first.classList.add('active');
-updateCtr();
-preload(1);
+        for (var i in DS.connection.assets) {
+          if (DS.connection.assets[i].success) {
+            loaded++;
+          }
+        }
+
+        if (assetCount === loaded && checkAssetsReady()) {
+          for (var i in DS.connection.assets) {
+            if (DS.connection.assets[i].action) {
+              DS.connection.assets[i].action();
+            }
+          }
+          hideWarning();
+          stopAssetGroup();
+        }
+      }, 100)
+    }
+
+    function requiredAsset(url, action, retry, type) {
+      if (!useConnectionMessages) { return; }
+      if (DS.connection.assets[url]) { return; }
+
+      DS.connection.assets[url] = {
+        success: false, action: action, retry: retry, type: type
+      };
+      assetCount = Object.keys(DS.connection.assets).length;
+      if (!DS.connection.loadingAssetGroup) {
+        startAssetGroup();
+      }
+      DS.connection.loadingAssetGroup = true;
+    }
+
+    function assetLoaded(url) {
+      if (!useConnectionMessages) { return; }
+      if (DS.connection.assets[url]) {
+        DS.connection.assets[url].success = true;
+      }
+    }
+
+    function assetFailed(url) {
+      if (!useConnectionMessages) { return; }
+      if (!DS.connection.assets[url]) {
+        if (/\.js$/.test(url) && url.indexOf('transcripts') === -1) {
+          setTimeout(function() {
+            if (DS.connection.lastSlideLoaded != null) {
+              DS.connection.lastSlideLoaded();
+            }
+          }, DS.connection.retryDelay);
+        }
+        return;
+      }
+      if (!DS.connection.warningShown) { showWarning(); }
+      if (DS.connection.assets[url].retry) {
+        setTimeout(function() {
+          if (!DS.connection.assets[url].success) {
+            DS.connection.assets[url].retry()
+          }
+        }, DS.connection.retryDelay);
+      }
+    }
+
+    function hideWarning() {
+      document.body.classList.remove('is-offline');
+      DS.connection.warningShown = false;
+      enableKeys();
+    }
+    DS.connection.hideWarning = hideWarning
+
+    function showWarning(btn) {
+      document.body.classList.add('is-offline')
+      DS.connection.warningShown = true;
+      updateWarningPosition();
+      disableKeys();
+    }
+
+    function updateWarningPosition() {
+      if (!DS.connection.warningShown) {
+        return;
+      }
+
+      var isPortrait = document.body.classList.contains('is-portrait');
+      var isMobile = document.body.classList.contains('view-mobile');
+      var warningEl = document.querySelector('.warn-connection-content');
+
+      if (isPortrait && isMobile) {
+        var slide = document.querySelector('.primary-slide');
+        var slideRect = slide != null
+          ? slide.getBoundingClientRect()
+          : { top: window.innerHeight, left: 0, width: window.innerWidth };
+
+        warningEl.style.top = `${slideRect.top}px`
+        warningEl.style.left = `${slideRect.left + slideRect.width / 2}px`
+      } else {
+        warningEl.style.top = null;
+        warningEl.style.left = null;
+      }
+
+      window.requestAnimationFrame(updateWarningPosition);
+    }
+
+    function onDisableKeyDown(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+
+    function onDisableKeyUp(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+
+    var accStyle = document.createElement('style');
+    var warnDialogEl = document.querySelector('.warn-connection-dialog');
+
+    function disableKeys() {
+      if (DS.views && DS.views.nsStack && DS.views.nsStack.length === 1) {
+        DS.views.nsStack[0].tabReachable = false
+        DS.views.nsStack[0].updateTabIndex(true);
+      }
+
+      accStyle.innerHTML = '.acc-shadow-dom { display: none; }';
+      document.body.appendChild(accStyle);
+
+      warnDialogEl.parentNode.append(warnDialogEl);
+      warnDialogEl.focus();
+    }
+
+    function enableKeys() {
+      accStyle.remove();
+      if (DS.views && DS.views.nsStack && DS.views.nsStack.length === 1 && DS.views.nsStack[0].name === '_frame') {
+        DS.views.nsStack[0].tabReachable = true;
+        DS.views.nsStack[0].updateTabIndex();
+      }
+    }
+
+    // these will all be noops if the feature flag isn't set in
+    // the data and `window.globals.features`
+    DS.connection.requiredAsset = requiredAsset;
+    DS.connection.assetLoaded = assetLoaded;
+    DS.connection.assetFailed = assetFailed;
+    DS.connection.stopAssetGroup = stopAssetGroup;
+    DS.connection.startAssetGroup = startAssetGroup;
+  })();
 </script>
+
+
+  <script>
+    
+    if (window.autoSpider && window.vInterfaceObject) {
+      document.querySelector('.mobile-load-title-overlay').style.display = 'none';
+    }
+  </script>
+
+  
+
+  <link rel="stylesheet" href="html5/data/css/output.min.css" data-noprefix/>
 </body>
+<script src="html5/lib/scripts/bootstrapper.min.js"></script>
 </html>
