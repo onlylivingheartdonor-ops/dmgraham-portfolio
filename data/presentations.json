@@ -1,7 +1,7 @@
 [
   {
     "title": "Death by PowerPoint",
-    "description": "A full-featured HTML5 presentation on avoiding common PowerPoint mistakes — built with custom animation engine, branching audio, and an interactive quiz.",
+    "description": "A full-featured HTML5 presentation on avoiding common PowerPoint mistakes — built with custom animation engine, branching audio, and an interactive quiz. *WARNING* Has strobe-like effects which can trigger reactions in some people.",
     "icon": "icons/dbp.png",
     "url": "presentations/dbp-build/index.html",
     "label": "INTERACTIVE PRESENTATION"
@@ -12,5 +12,12 @@
     "icon": "icons/pizza.png",
     "url": "presentations/pizza/index.html",
     "label": "INTERACTIVE TRAINING"
+  }
+  {
+    "title": "Derek and Jennifer",
+    "description": "A fun little promotional presentation for The Write Method, a structured process for teaching the writintg of essays.",
+    "icon": "icons/dj.png",
+    "url": "presentations/dj/index.html",
+    "label": "PROMOTIONAL PRESENTATION"
   }
 ]
