@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposal: New-Supervisor Development Program (fictional)</title>
+<meta name="description" content="A training proposal and business case with an interactive ROI calculator. Fictional company and illustrative numbers.">
+<style>
+/* ===== Intelligent Heart Productions — portfolio deck engine (shared) ===== */
+:root{
+  --ink:#0E1A2B; --ink2:#1B2B42; --ink3:#2B3F5C;
+  --paper:#F6F3EC; --card:#FFFFFF; --line:#D9D3C6; --muted:#566377;
+  --accent:#E8A100; --accent-d:#8A5A00; --accent-l:#FFF1CC;
+  --danger:#C8372D; --danger-l:#FBE4E1; --ok:#1F7A55; --ok-l:#DDF3E8; --info:#1D6F8C; --info-l:#DCEFF5;
+  --bar-h:52px;
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0A121F;font-family:var(--font);color:var(--ink);overflow:hidden}
+body{display:flex;flex-direction:column}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:0;background:#fff;color:#000;padding:8px 12px;z-index:100}
+.skip:focus{left:8px;top:8px}
+button{font-family:inherit}
+:focus-visible{outline:3px solid #6CB6FF;outline-offset:2px}
+
+/* ---------- viewport / stage ---------- */
+#viewport{flex:1 1 auto;position:relative;min-height:0;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center center;background:var(--paper);box-shadow:0 10px 50px rgba(0,0,0,.5);outline:none}
+.slide{position:absolute;inset:0;padding:54px 72px 64px;background:var(--paper);color:var(--ink);opacity:0;visibility:hidden;transform:translateX(24px);transition:opacity .35s ease,transform .35s ease,visibility 0s linear .35s;overflow:hidden}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease,transform .35s ease,visibility 0s}
+.slide.dark{background:var(--ink);color:#fff}
+.slide.dark2{background:linear-gradient(135deg,var(--ink) 0%,var(--ink3) 100%);color:#fff}
+@media (prefers-reduced-motion:reduce){.slide,.slide.active{transition:none;transform:none}}
+
+/* ---------- type ---------- */
+.slide h1{font-size:58px;line-height:1.08;margin:0 0 18px;font-weight:800;letter-spacing:-.5px}
+.slide h2{font-size:42px;line-height:1.12;margin:0 0 14px;font-weight:800;letter-spacing:-.3px}
+.slide h3{font-size:26px;line-height:1.2;margin:0 0 8px;font-weight:700}
+.slide h4{font-size:20px;line-height:1.2;margin:0 0 6px;font-weight:700}
+.slide p{font-size:24px;line-height:1.42;margin:0 0 12px}
+.slide ul,.slide ol{font-size:24px;line-height:1.4;margin:0 0 12px;padding-left:1.1em}
+.slide li{margin-bottom:6px}
+.kicker{font-size:16px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent-d);margin-bottom:10px}
+.dark .kicker,.dark2 .kicker{color:var(--accent)}
+.lead{font-size:28px!important;line-height:1.38!important;color:var(--ink2)}
+.dark .lead,.dark2 .lead{color:#E6ECF5}
+.muted{color:var(--muted)}
+.dark .muted,.dark2 .muted{color:#B9C5D8}
+.small{font-size:18px!important;line-height:1.4!important}
+.tiny{font-size:15px!important;line-height:1.35!important}
+.center{text-align:center}
+.nowrap{white-space:nowrap}
+strong,b{font-weight:700}
+.hl{background:linear-gradient(transparent 58%,rgba(232,161,0,.45) 58%);padding:0 2px}
+
+/* ---------- layout helpers ---------- */
+.row{display:flex;gap:28px}
+.col{flex:1 1 0;min-width:0}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g6{grid-template-columns:repeat(3,1fr)}
+.stack>*+*{margin-top:14px}
+.mt{margin-top:20px}.mt2{margin-top:32px}.mb0{margin-bottom:0!important}
+.between{justify-content:space-between}.aic{align-items:center}.aifs{align-items:flex-start}
+
+/* ---------- cards & chips ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:0 2px 0 rgba(14,26,43,.04)}
+.card h3,.card h4{margin-top:0}
+.card p,.card li{font-size:20px}
+.dark .card,.dark2 .card{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#fff}
+.card.accent{border-left:8px solid var(--accent)}
+.card.danger{border-left:8px solid var(--danger)}
+.card.ok{border-left:8px solid var(--ok)}
+.card.info{border-left:8px solid var(--info)}
+.tag{display:inline-block;font-size:14px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:var(--accent-l);color:var(--accent-d)}
+.tag.dark{background:var(--ink);color:#fff}
+.tag.red{background:var(--danger-l);color:#8E1E16}
+.tag.green{background:var(--ok-l);color:#14573C}
+.tag.blue{background:var(--info-l);color:#0F4A5F}
+.dark .tag,.dark2 .tag{background:rgba(232,161,0,.2);color:var(--accent)}
+.num{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--ink);font-weight:800;font-size:24px;flex:none}
+.num.sm{width:34px;height:34px;font-size:18px}
+.num.dk{background:var(--ink);color:#fff}
+.callout{border-radius:12px;padding:16px 20px;background:var(--accent-l);border:1px solid #F0D58A;font-size:21px;line-height:1.38}
+.callout.red{background:var(--danger-l);border-color:#F2B8B2}
+.callout.green{background:var(--ok-l);border-color:#A8DCC2}
+.callout.blue{background:var(--info-l);border-color:#A9D3E0}
+.dark .callout,.dark2 .callout{background:rgba(232,161,0,.14);border-color:rgba(232,161,0,.4);color:#fff}
+.fictional{position:absolute;right:36px;bottom:16px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);opacity:.9}
+.dark .fictional,.dark2 .fictional{color:#9FB0C9}
+.foot{position:absolute;left:72px;bottom:18px;font-size:13px;letter-spacing:.6px;color:var(--muted);font-weight:600}
+.dark .foot,.dark2 .foot{color:#9FB0C9}
+
+/* ---------- tables ---------- */
+table.t{border-collapse:separate;border-spacing:0;width:100%;font-size:19px;background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+table.t th{background:var(--ink);color:#fff;text-align:left;padding:11px 14px;font-weight:700;font-size:16px;letter-spacing:.8px;text-transform:uppercase}
+table.t td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;line-height:1.3}
+table.t tr:nth-child(even) td{background:#FBF9F4}
+table.t td.y{color:var(--ok);font-weight:700}
+table.t td.n{color:var(--danger);font-weight:700}
+
+/* ---------- reveal steps ---------- */
+[data-step]{opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+[data-step].on{opacity:1;transform:none;pointer-events:auto}
+@media (prefers-reduced-motion:reduce){[data-step]{transition:none;transform:none}}
+
+/* ---------- buttons ---------- */
+.btn{appearance:none;border:0;background:var(--accent);color:var(--ink);font-weight:800;font-size:20px;padding:12px 22px;border-radius:10px;cursor:pointer}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;border:2px solid currentColor;color:inherit}
+.btn.dk{background:var(--ink);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ---------- quiz ---------- */
+.quiz .q{font-size:27px;line-height:1.3;font-weight:700;margin:0 0 16px}
+.quiz .opts{display:grid;gap:10px}
+.opt{appearance:none;text-align:left;display:flex;gap:14px;align-items:flex-start;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 16px;font-size:21px;line-height:1.3;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not([disabled]):not(.correct){border-color:var(--ink3);background:#FFFDF8}
+.opt .k{flex:none;width:32px;height:32px;border-radius:50%;background:var(--paper);border:2px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;text-transform:uppercase}
+.opt.correct{border-color:var(--ok);background:var(--ok-l)}
+.opt.correct .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--danger);background:var(--danger-l);opacity:.85}
+.opt.wrong .k{background:var(--danger);border-color:var(--danger);color:#fff}
+.opt[disabled]{cursor:default}
+.quiz.done .opt:not(.correct){opacity:.55}
+.fb{margin-top:14px;border-radius:12px;padding:12px 16px;font-size:20px;line-height:1.35;display:none}
+.fb.show{display:block}
+.fb.good{background:var(--ok-l);border:1px solid #A8DCC2;color:#0F4A31}
+.fb.bad{background:var(--danger-l);border:1px solid #F2B8B2;color:#7A1912}
+.score{font-weight:800;font-size:20px}
+
+/* ---------- sequence game ---------- */
+.seq .pool{display:flex;flex-wrap:wrap;gap:10px;min-height:56px}
+.chip{appearance:none;border:2px solid var(--ink3);background:var(--card);color:var(--ink);border-radius:999px;padding:10px 18px;font-size:20px;font-weight:700;cursor:pointer}
+.chip:hover{background:var(--accent-l)}
+.seq .line{list-style:none;margin:16px 0;padding:0;display:grid;gap:8px;counter-reset:s}
+.seq .line li{counter-increment:s;display:flex;align-items:center;gap:12px;background:var(--card);border:2px dashed var(--line);border-radius:12px;padding:8px 14px;font-size:20px;font-weight:700;min-height:48px}
+.seq .line li::before{content:counter(s);display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-size:16px;flex:none}
+.seq .line li.right{border-style:solid;border-color:var(--ok);background:var(--ok-l)}
+.seq .line li.wrongpos{border-style:solid;border-color:var(--danger);background:var(--danger-l)}
+.seq .line li button{margin-left:auto;appearance:none;border:0;background:transparent;font-size:18px;cursor:pointer;color:var(--muted)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tab{appearance:none;border:2px solid var(--ink3);background:transparent;color:inherit;border-radius:999px;padding:8px 16px;font-size:18px;font-weight:700;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.pane{display:none}.pane.on{display:block}
+
+/* ---------- controls bar ---------- */
+#bar{flex:none;height:var(--bar-h);display:flex;align-items:center;gap:8px;padding:0 12px;background:#0A121F;color:#DCE5F2;border-top:1px solid #1E2C42}
+#bar button{appearance:none;border:1px solid #2B3F5C;background:#13233A;color:#DCE5F2;border-radius:8px;height:34px;min-width:38px;padding:0 12px;font-size:15px;font-weight:700;cursor:pointer}
+#bar button:hover{background:#1B3150}
+#bar button[aria-pressed="true"]{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+#bar .count{font-size:14px;font-weight:700;min-width:64px;text-align:center;color:#9FB0C9}
+#bar .prog{flex:1;height:6px;border-radius:3px;background:#1B2B42;overflow:hidden}
+#bar .prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+#bar .sp{flex:none;width:6px}
+#menu{position:absolute;left:12px;bottom:calc(var(--bar-h) + 6px);width:min(440px,92vw);max-height:70vh;overflow:auto;background:#13233A;border:1px solid #2B3F5C;border-radius:12px;padding:8px;z-index:50}
+#menu[hidden]{display:none}
+#menu button{display:block;width:100%;text-align:left;margin:2px 0;padding:8px 10px;height:auto;border:0;background:transparent;color:#DCE5F2;font-size:15px;font-weight:600;border-radius:8px;cursor:pointer}
+#menu button:hover,#menu button.cur{background:#223A5C}
+#menu button.cur{color:var(--accent)}
+#captionbar{flex:none;display:none;min-height:70px;padding:10px 24px;background:#050A12;color:#fff;font-size:20px;line-height:1.35;text-align:center;align-items:center;justify-content:center}
+body.has-captions #captionbar{display:flex}
+body.has-captions.caps-off #captionbar{display:none}
+#lightbox{position:fixed;inset:0;background:rgba(5,10,18,.92);z-index:80;display:flex;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox[hidden]{display:none}
+#lightbox .lb-inner{transform-origin:center center;box-shadow:0 10px 60px #000}
+.zoomable{cursor:zoom-in;position:relative}
+.zoomable::after{content:"Click to enlarge";position:absolute;right:8px;bottom:8px;font-size:12px;font-weight:700;background:rgba(14,26,43,.85);color:#fff;border-radius:6px;padding:3px 8px;opacity:0;transition:opacity .2s}
+.zoomable:hover::after,.zoomable:focus-visible::after{opacity:1}
+#printArea{display:none}
+
+@media print{
+  html,body{overflow:visible;background:#fff}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+}
+
+.noanim *{transition:none!important;animation:none!important}
+
+#bar a.home{display:inline-flex;align-items:center;height:34px;padding:0 12px;border:1px solid #2B3F5C;background:#13233A;color:#DCE5F2;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap}
+#bar a.home:hover{background:#1B3150}
+
+.fx{position:absolute;right:72px;bottom:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.dark2 .fx{color:#9FB0C9}
+.stat{font-size:58px;font-weight:800;line-height:1}
+.stat small{display:block;font-size:17px;font-weight:600;color:var(--muted);margin-top:8px;line-height:1.3}
+.calc{display:grid;grid-template-columns:1.05fr 1fr;gap:26px;margin-top:10px}
+.ctl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 22px}
+.ctl label{display:flex;justify-content:space-between;font-size:19px;font-weight:700;margin-top:10px}
+.ctl label output{color:var(--accent-d)}
+.ctl input[type=range]{width:100%;accent-color:#E8A100;height:30px}
+.ctl .hint{font-size:15px;color:var(--muted);margin:0}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.res .card{padding:14px 16px}
+.res .v{font-size:38px;font-weight:800;line-height:1.05}
+.res .v.pos{color:var(--ok)}.res .v.neg{color:var(--danger)}
+.res small{display:block;font-size:15px;color:var(--muted);margin-top:4px;line-height:1.3}
+.bud{display:grid;grid-template-columns:1fr 130px 130px;font-size:20px}
+.bud>div{padding:9px 12px;border-top:1px solid var(--line)}
+.bud .h{background:var(--ink);color:#fff;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;border:0}
+.bud .r{text-align:right;font-variant-numeric:tabular-nums}
+.bud .tot{font-weight:800;background:var(--accent-l)}
+.gate{display:grid;grid-template-columns:1fr 60px 1fr 60px 1fr;gap:0;align-items:stretch;margin-top:18px}
+.gate .card{padding:16px 18px}
+.gate .arr{display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--accent-d);font-weight:800}
+.mp{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+</style>
+</head>
+<body class="">
+<a class="skip" href="#stage">Skip to slides</a>
+<div id="viewport"><div id="stage" tabindex="-1">
+<section class="slide dark2" data-title="Title"><div class="kicker">Training proposal and business case</div>
+<h1 style="font-size:60px;max-width:1040px">Turning new supervisors into leaders people stay for</h1>
+<p class="lead" style="max-width:900px">A proposed 12-week development program for Ridgeline Supply, a fictional 600-person regional distribution company.</p>
+<div class="row mt2" style="gap:14px"><span class="tag">Pilot first</span><span class="tag">Measured against turnover</span><span class="tag">Interactive ROI model</span></div>
+<p class="small muted" style="position:absolute;left:72px;bottom:62px;max-width:1000px">Ridgeline Supply, its leaders and every figure here are invented to demonstrate a business case. Adjust the numbers in the ROI model to test the argument.</p>
+<div class="foot">David M. Graham · Content Architect &amp; Instructional Designer · Intelligent Heart Productions</div><div class="fx">Fictional company · Illustrative figures</div></section><section class="slide " data-title="Executive summary"><div class="kicker">Summary</div><h2>The case in one slide</h2>
+<div class="grid g3 mt">
+<div class="card danger" data-step><h3>The problem</h3><p class="small">Turnover is 28%. Exit interviews and engagement data point to first-line supervision as the main driver.</p></div>
+<div class="card accent" data-step><h3>The proposal</h3><p class="small">A 12-week blended program for new supervisors, piloted with 24 people before any full rollout.</p></div>
+<div class="card info" data-step><h3>The return</h3><p class="small">At a 4-point turnover reduction, the program pays back in about 15 months and returns about 145% over three years.</p></div></div>
+<div class="callout mt2" data-step><strong>The ask:</strong> approve a $76,500 pilot with a clear go / no-go gate at week 26, not the full $132,000 up front.</div><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Cost of the problem"><div class="kicker">The problem</div><h2>What turnover costs Ridgeline today</h2>
+<div class="grid g4 mt">
+<div class="card" data-step><div class="stat">600<small>employees</small></div></div>
+<div class="card" data-step><div class="stat">28%<small>annual turnover, about 168 people</small></div></div>
+<div class="card" data-step><div class="stat">$4,500<small>estimated cost to replace one person</small></div></div>
+<div class="card" data-step><div class="stat" style="color:#C8372D">$756K<small>turnover cost each year</small></div></div></div>
+<p class="small muted mt2">$756,000 = 600 employees × 28% × $4,500. The replacement cost covers recruiting, onboarding, lost productivity and overtime coverage. Replace it with your own finance team’s figure in the model on slide 8.</p><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Root cause"><div class="kicker">The problem</div><h2>Why people leave: the supervisor gap</h2>
+<div class="grid g2 mt">
+<div class="stack">
+<div class="card danger" data-step><h4>Promoted for skill, not leadership</h4><p class="small mb0">Most first-line supervisors were top performers. Nobody taught them how to run a team.</p></div>
+<div class="card danger" data-step><h4>Little feedback and no coaching</h4><p class="small mb0">Exit interviews cite “my supervisor never told me how I was doing.”</p></div></div>
+<div class="stack">
+<div class="card danger" data-step><h4>Inconsistent handling of conflict</h4><p class="small mb0">The same situation gets different answers on different shifts.</p></div>
+<div class="card info" data-step><h4>The evidence is suggestive, not proof</h4><p class="small mb0">That is why the proposal is a pilot with a measured gate.</p></div></div></div><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="The program"><div class="kicker">The solution</div><h2>A 12-week program in four parts</h2>
+<div class="grid g4 mt">
+<div class="card accent" data-step><h3>1. Foundations</h3><p class="small">Role of the supervisor, expectations, communication. Weeks 1–3.</p></div>
+<div class="card accent" data-step><h3>2. Everyday skills</h3><p class="small">Feedback, delegation, coaching conversations, with practice. Weeks 4–8.</p></div>
+<div class="card accent" data-step><h3>3. Hard conversations</h3><p class="small">Conflict, attendance, performance. Role-play with scenarios. Weeks 9–11.</p></div>
+<div class="card accent" data-step><h3>4. Apply and review</h3><p class="small">Action plan on the floor with a manager coach. Week 12.</p></div></div>
+<div class="callout mt2" data-step><strong>Design principle:</strong> learn a skill, use it on the floor that week, report back. Short sessions on shift, not a three-day offsite.</div><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Learning design"><div class="kicker">The solution</div><h2>How it is built to change behavior</h2>
+<table class="t mt"><thead><tr><th>Element</th><th>What it is</th><th>Why</th></tr></thead><tbody>
+<tr data-step><td><b>Short on-shift sessions</b></td><td>45 minutes weekly, small cohorts</td><td>Fits the schedule, so people actually attend</td></tr>
+<tr data-step><td><b>Interactive modules</b></td><td>Branching scenarios on real situations</td><td>Practice decisions before they count</td></tr>
+<tr data-step><td><b>Manager coaching</b></td><td>Monthly 20-minute check-ins</td><td>Skills stick when someone follows up</td></tr>
+<tr data-step><td><b>Floor assignments</b></td><td>One skill used each week</td><td>Closes the gap between class and job</td></tr></tbody></table><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Pilot first"><div class="kicker">The approach</div><h2>Pilot first, with a go / no-go gate</h2>
+<div class="gate">
+<div class="card accent" data-step><h3>Pilot</h3><p class="small mb0">24 supervisors, two sites. Weeks 1–12. Cost $76,500.</p></div><div class="arr">→</div>
+<div class="card info" data-step><h3>Gate, week 26</h3><p class="small mb0">Review results against agreed targets. Leadership decides.</p></div><div class="arr">→</div>
+<div class="card accent" data-step><h3>Rollout</h3><p class="small mb0">Remaining supervisors, only if the gate is met. Balance of $55,500.</p></div></div>
+<div class="callout mt2" data-step><strong>What this protects:</strong> if the pilot misses, Ridgeline has spent 58% of the full budget, not 100%, and has real data to decide with.</div><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="ROI model"><div class="kicker">The numbers</div><h2>Test the business case yourself</h2>
+<div class="calc">
+<div class="ctl"><label for="c-emp">Employees<output id="o-emp"></output></label><input type="range" id="c-emp" min="200" max="1500" step="50" value="600"><label for="c-turn">Current turnover<output id="o-turn"></output></label><input type="range" id="c-turn" min="10" max="50" step="1" value="28"><label for="c-cost">Cost to replace one person<output id="o-cost"></output></label><input type="range" id="c-cost" min="2000" max="10000" step="250" value="4500"><label for="c-red">Turnover reduction from the program<output id="o-red"></output></label><input type="range" id="c-red" min="0" max="10" step="0.5" value="4"><p class="hint">Percentage points</p><label for="c-prog">Program cost<output id="o-prog"></output></label><input type="range" id="c-prog" min="50000" max="250000" step="1000" value="132000"><div class="row mt" style="gap:12px"><button class="btn ghost" type="button" id="c-reset">Reset to proposal</button></div></div>
+<div class="res" id="results" aria-live="off">
+<div class="card"><div class="v" id="r-base"></div><small>turnover cost per year today</small></div>
+<div class="card"><div class="v pos" id="r-save"></div><small id="r-avoid"></small></div>
+<div class="card"><div class="v" id="r-pay"></div><small>payback on program cost</small></div>
+<div class="card"><div class="v" id="r-roi"></div><small id="r-net"></small></div>
+<div class="card" style="grid-column:span 2"><div class="v" id="r-be" style="font-size:30px"></div><small>break-even: the smallest turnover reduction that repays the program in 3 years</small></div></div></div>
+<p class="sr" id="r-live" aria-live="polite"></p><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Budget"><div class="kicker">The investment</div><h2>Budget: pilot and full program</h2>
+<div class="bud mt">
+<div class="h">Item</div><div class="h r">Pilot</div><div class="h r">Full</div>
+<div>Design and development of the 12-week program</div><div class="r">$58,000</div><div class="r">$58,000</div>
+<div>Delivery and facilitation</div><div class="r">$9,000</div><div class="r">$36,000</div>
+<div>Manager coaching</div><div class="r">$6,000</div><div class="r">$24,000</div>
+<div>LMS and tracking</div><div class="r">$1,500</div><div class="r">$6,000</div>
+<div>Evaluation</div><div class="r">$2,000</div><div class="r">$8,000</div>
+<div class="tot">Total</div><div class="tot r">$76,500</div><div class="tot r">$132,000</div></div>
+<p class="small muted mt">Design is a one-time cost, so most of it is spent in the pilot and not repeated at rollout. All figures are illustrative.</p><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Measurement"><div class="kicker">The proof</div><h2>How we will know it worked</h2>
+<div class="mp mt">
+<div class="card" data-step><h3>Learning</h3><p class="small">Scenario assessment and manager observation of each skill on the floor.</p></div>
+<div class="card" data-step><h3>Behavior</h3><p class="small">Team feedback pulse at weeks 0, 12 and 26. Share of employees with a documented coaching talk.</p></div>
+<div class="card" data-step><h3>Results</h3><p class="small">Turnover and 90-day new-hire retention, pilot sites against comparison sites.</p></div></div>
+<div class="callout mt2" data-step><strong>Gate target:</strong> a measurable improvement in 90-day retention and team feedback at pilot sites versus comparison sites. Turnover itself moves slowly, so it is tracked at 6 and 12 months.</div><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide " data-title="Risks"><div class="kicker">Risks</div><h2>What could go wrong, and the plan</h2>
+<table class="t mt"><thead><tr><th>Risk</th><th>Mitigation</th></tr></thead><tbody>
+<tr data-step><td><b>Supervisors cannot leave the floor</b></td><td>Short on-shift sessions; cover plan agreed with site managers</td></tr>
+<tr data-step><td><b>Skills do not stick</b></td><td>Floor assignments and manager coaching built in</td></tr>
+<tr data-step><td><b>Turnover has other causes</b></td><td>Comparison sites; gate asks for more than a turnover number</td></tr>
+<tr data-step><td><b>Managers do not reinforce</b></td><td>Brief managers first; coaching time is part of the plan</td></tr></tbody></table><div class="fx">Fictional company · Illustrative figures</div><div class="foot">Training proposal · David M. Graham · Intelligent Heart Productions</div></section><section class="slide dark2" data-title="The ask"><div class="kicker">Decision</div><h1 style="font-size:54px;max-width:1000px">Approve a $76,500 pilot. Decide on rollout with data at week 26.</h1>
+<div class="grid g3 mt2">
+<div class="card" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)" data-step><h3>Now</h3><p class="small">Approve the pilot, choose two sites and name a sponsor.</p></div>
+<div class="card" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)" data-step><h3>Week 12</h3><p class="small">Pilot ends. First results shared.</p></div>
+<div class="card" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)" data-step><h3>Week 26</h3><p class="small">Gate review. Go or no-go on the full program.</p></div></div>
+<div class="foot">David M. Graham · Content Architect &amp; Instructional Designer · Intelligent Heart Productions</div><div class="fx">Fictional company · Illustrative figures</div></section>
+</div></div>
+<div id="captionbar" aria-hidden="false"></div>
+<nav id="bar" aria-label="Slide controls"></nav>
+<div id="menu" hidden></div>
+<div id="lightbox" hidden></div>
+<div id="printArea"></div>
+<div id="announce" class="sr" aria-live="polite"></div>
+<script>
+/* ===== Intelligent Heart Productions — portfolio deck engine (shared) ===== */
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  var stage = $('#stage');
+  var slides = $$('.slide', stage);
+  var N = slides.length;
+  var cur = -1;
+  var state = { captions: true, narration: false, audioOK: true };
+  var hasCaptions = document.body.classList.contains('has-captions');
+  var announce = $('#announce');
+  var audio = null;
+
+  /* ---------- steps (progressive reveal) ---------- */
+  var stepInfo = slides.map(function (s) {
+    var els = $$('[data-step]', s);
+    var keys = [];
+    els.forEach(function (e, i) {
+      var raw = e.getAttribute('data-step');
+      var k = raw === '' || isNaN(Number(raw)) ? i + 1 : Number(raw);
+      e._k = k;
+      if (keys.indexOf(k) < 0) keys.push(k);
+    });
+    keys.sort(function (a, b) { return a - b; });
+    return { els: els, keys: keys, pos: 0 };
+  });
+
+  function showSteps(i, upto) {
+    var info = stepInfo[i];
+    info.pos = upto;
+    info.els.forEach(function (e) {
+      var idx = info.keys.indexOf(e._k);
+      e.classList.toggle('on', idx < upto);
+    });
+  }
+
+  /* ---------- fit to window ---------- */
+  function fit() {
+    var vp = $('#viewport');
+    var s = Math.min(vp.clientWidth / 1280, vp.clientHeight / 720);
+    if (!isFinite(s) || s <= 0) s = 1;
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+
+  /* ---------- navigation ---------- */
+  function updateUI() {
+    var c = $('#bar .count');
+    if (c) c.textContent = (cur + 1) + ' / ' + N;
+    var p = $('#bar .prog i');
+    if (p) p.style.width = (N > 1 ? (cur / (N - 1)) * 100 : 100) + '%';
+    $$('#menu button').forEach(function (b, i) { b.classList.toggle('cur', i === cur); });
+    var prev = $('#btnPrev'), next = $('#btnNext');
+    if (prev) prev.disabled = cur <= 0 && stepInfo[cur].pos === 0;
+    if (next) next.disabled = cur >= N - 1 && stepInfo[cur].pos >= stepInfo[cur].keys.length;
+  }
+
+  function setCaption() {
+    if (!hasCaptions) return;
+    var cb = $('#captionbar');
+    cb.textContent = slides[cur].getAttribute('data-caption') || '';
+  }
+
+  function playNarration() {
+    if (!audio) return;
+    try { audio.pause(); } catch (e) { /* ignore */ }
+    var src = slides[cur].getAttribute('data-vo');
+    if (!state.narration || !src || !state.audioOK) return;
+    audio.src = src;
+    var pr = audio.play();
+    if (pr && pr.catch) pr.catch(function () { /* autoplay or missing file: stay silent */ });
+  }
+
+  function go(i, mode) {
+    if (i < 0 || i >= N || i === cur) return;
+    var fwd = i > cur;
+    if (cur >= 0) {
+      slides[cur].classList.remove('active');
+      slides[cur].setAttribute('aria-hidden', 'true');
+      if ('inert' in slides[cur]) slides[cur].inert = true;
+    }
+    cur = i;
+    var s = slides[cur];
+    s.classList.add('active');
+    s.removeAttribute('aria-hidden');
+    if ('inert' in s) s.inert = false;
+    if (mode === 'end' || !fwd || /[?&]all\b/.test(location.search)) showSteps(cur, stepInfo[cur].keys.length); else showSteps(cur, 0);
+    try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) { /* file:// may refuse */ }
+    var title = s.getAttribute('data-title') || ('Slide ' + (cur + 1));
+    if (announce) announce.textContent = 'Slide ' + (cur + 1) + ' of ' + N + ': ' + title;
+    updateUI();
+    setCaption();
+    playNarration();
+  }
+
+  function next() {
+    var info = stepInfo[cur];
+    if (info.pos < info.keys.length) { showSteps(cur, info.pos + 1); updateUI(); return; }
+    go(cur + 1);
+  }
+  function prev() {
+    var info = stepInfo[cur];
+    if (info.pos > 0) { showSteps(cur, info.pos - 1); updateUI(); return; }
+    go(cur - 1, 'end');
+  }
+
+  /* ---------- controls ---------- */
+  function buildBar() {
+    var bar = $('#bar');
+    bar.innerHTML =
+      '<a class="home" href="../../index.html" title="Back to portfolio">&#8592; Portfolio</a>' +
+      '<button id="btnMenu" type="button" aria-label="Slide list" aria-haspopup="true">Slides</button>' +
+      '<button id="btnPrev" type="button" aria-label="Previous">&#9664;</button>' +
+      '<span class="count" aria-hidden="true"></span>' +
+      '<button id="btnNext" type="button" aria-label="Next">&#9654;</button>' +
+      '<div class="prog" aria-hidden="true"><i></i></div>' +
+      (hasCaptions ? '<button id="btnCap" type="button" aria-pressed="true" title="Captions (C)">Captions</button>' +
+        '<button id="btnVO" type="button" aria-pressed="false" title="Play narration audio (M)">Narration</button>' : '') +
+      '<button id="btnFull" type="button" aria-label="Full screen (F)" title="Full screen (F)">Full screen</button>';
+    var menu = $('#menu');
+    menu.innerHTML = slides.map(function (s, i) {
+      return '<button type="button" data-i="' + i + '">' + (i + 1) + '. ' + (s.getAttribute('data-title') || 'Slide') + '</button>';
+    }).join('');
+    $('#btnPrev').addEventListener('click', prev);
+    $('#btnNext').addEventListener('click', next);
+    $('#btnMenu').addEventListener('click', function () { menu.hidden = !menu.hidden; });
+    menu.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-i]');
+      if (!b) return;
+      go(Number(b.getAttribute('data-i')));
+      menu.hidden = true;
+    });
+    $('#btnFull').addEventListener('click', toggleFull);
+    if (hasCaptions) {
+      $('#btnCap').addEventListener('click', toggleCaps);
+      $('#btnVO').addEventListener('click', toggleVO);
+    }
+  }
+  function toggleFull() {
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
+  }
+  function toggleCaps() {
+    state.captions = !state.captions;
+    document.body.classList.toggle('caps-off', !state.captions);
+    $('#btnCap').setAttribute('aria-pressed', String(state.captions));
+    setTimeout(fit, 30);
+  }
+  function toggleVO() {
+    if (!audio) {
+      audio = new Audio();
+      audio.addEventListener('error', function () {
+        state.audioOK = false;
+        state.narration = false;
+        var b = $('#btnVO');
+        if (b) { b.setAttribute('aria-pressed', 'false'); b.textContent = 'Narration audio not installed'; b.disabled = true; }
+      });
+    }
+    state.narration = !state.narration;
+    $('#btnVO').setAttribute('aria-pressed', String(state.narration));
+    if (state.narration) playNarration(); else { try { audio.pause(); } catch (e) { /* ignore */ } }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    var tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var lb = $('#lightbox');
+    if (e.key === 'Escape') { if (!lb.hidden) { lb.hidden = true; lb.innerHTML = ''; } $('#menu').hidden = true; return; }
+    if (e.key === ' ' && tag === 'BUTTON') return;
+    switch (e.key) {
+      case 'ArrowRight': case 'PageDown': case ' ': e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
+      case 'Home': e.preventDefault(); go(0); break;
+      case 'End': e.preventDefault(); go(N - 1, 'end'); break;
+      case 'f': case 'F': toggleFull(); break;
+      case 'c': case 'C': if (hasCaptions) toggleCaps(); break;
+      case 'm': case 'M': if (hasCaptions) toggleVO(); break;
+      default: break;
+    }
+  });
+
+  var tx = null;
+  stage.addEventListener('touchstart', function (e) { tx = (e.target.closest && e.target.closest('input,select,textarea')) ? null : e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    tx = null;
+    if (Math.abs(dx) > 60) { if (dx < 0) next(); else prev(); }
+  }, { passive: true });
+
+  /* ---------- quiz ---------- */
+  function updateScores() {
+    $$('.score').forEach(function (el) {
+      var g = el.getAttribute('data-group');
+      var qs = $$('.quiz[data-group="' + g + '"]');
+      var ok = qs.filter(function (q) { return q.classList.contains('done') && !q.getAttribute('data-missed'); }).length;
+      var fin = qs.filter(function (q) { return q.classList.contains('done'); }).length;
+      el.textContent = fin === qs.length ? ('Final score: ' + ok + ' of ' + qs.length + ' correct on the first try') : (fin + ' of ' + qs.length + ' answered');
+    });
+  }
+  $$('.quiz').forEach(function (q) {
+    var ans = q.getAttribute('data-answer');
+    var fb = $('.fb', q);
+    $$('.opt', q).forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (q.classList.contains('done')) return;
+        var k = b.getAttribute('data-k');
+        var msg = b.getAttribute('data-fb') || '';
+        if (k === ans) {
+          b.classList.add('correct');
+          q.classList.add('done');
+          fb.className = 'fb good show';
+          fb.innerHTML = '<strong>Correct.</strong> ' + (msg || q.getAttribute('data-ok') || '');
+          $$('.opt', q).forEach(function (o) { o.disabled = true; });
+        } else {
+          b.classList.add('wrong');
+          b.disabled = true;
+          q.setAttribute('data-missed', '1');
+          fb.className = 'fb bad show';
+          fb.innerHTML = '<strong>Not quite.</strong> ' + (msg || 'Try again.');
+        }
+        updateScores();
+      });
+    });
+  });
+  updateScores();
+
+  /* ---------- sequence game ---------- */
+  $$('.seq').forEach(function (g) {
+    var pool = $('.pool', g), line = $('.line', g), fb = $('.fb', g);
+    var order = g.getAttribute('data-order').split(',');
+    var chips = $$('.chip', pool);
+    function shuffle() {
+      var arr = chips.slice();
+      for (var i = arr.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+      arr.forEach(function (c) { pool.appendChild(c); });
+    }
+    function reset() {
+      line.innerHTML = '';
+      chips.forEach(function (c) { c.hidden = false; });
+      fb.className = 'fb';
+      shuffle();
+    }
+    chips.forEach(function (c) {
+      c.addEventListener('click', function () {
+        var li = document.createElement('li');
+        li.setAttribute('data-n', c.getAttribute('data-n'));
+        var span = document.createElement('span');
+        span.textContent = c.textContent;
+        var x = document.createElement('button');
+        x.type = 'button'; x.textContent = 'remove'; x.setAttribute('aria-label', 'Remove ' + c.textContent);
+        x.addEventListener('click', function () { line.removeChild(li); c.hidden = false; fb.className = 'fb'; });
+        li.appendChild(span); li.appendChild(x);
+        line.appendChild(li);
+        c.hidden = true;
+        fb.className = 'fb';
+      });
+    });
+    $('.seq-check', g).addEventListener('click', function () {
+      var items = $$('li', line);
+      if (items.length < order.length) { fb.className = 'fb bad show'; fb.textContent = 'Add all ' + order.length + ' steps first, then check.'; return; }
+      var right = 0;
+      items.forEach(function (li, i) {
+        var ok = li.getAttribute('data-n') === order[i];
+        li.classList.remove('right', 'wrongpos');
+        li.classList.add(ok ? 'right' : 'wrongpos');
+        if (ok) right++;
+      });
+      if (right === order.length) { fb.className = 'fb good show'; fb.innerHTML = '<strong>Perfect order.</strong> ' + (g.getAttribute('data-ok') || ''); }
+      else { fb.className = 'fb bad show'; fb.innerHTML = '<strong>' + right + ' of ' + order.length + ' in the right place.</strong> Remove the red ones and try again.'; }
+    });
+    $('.seq-reset', g).addEventListener('click', reset);
+    shuffle();
+  });
+
+  /* ---------- tabs ---------- */
+  $$('.tabs').forEach(function (tabs) {
+    var scope = tabs.parentNode;
+    var btns = $$('.tab', tabs);
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        btns.forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); });
+        $$('.pane', scope).forEach(function (p) { p.classList.toggle('on', p.id === b.getAttribute('data-pane')); });
+      });
+    });
+  });
+
+  /* ---------- lightbox zoom ---------- */
+  document.addEventListener('click', function (e) {
+    var z = e.target.closest('.zoomable');
+    var lb = $('#lightbox');
+    if (z && lb.hidden) {
+      var clone = z.cloneNode(true);
+      clone.classList.remove('zoomable');
+      clone.removeAttribute('tabindex');
+      var w = z.offsetWidth, h = z.offsetHeight;
+      var s = Math.min(window.innerWidth * 0.94 / w, window.innerHeight * 0.94 / h);
+      lb.innerHTML = '';
+      var inner = document.createElement('div');
+      inner.className = 'lb-inner';
+      inner.style.width = (w * s) + 'px';
+      inner.style.height = (h * s) + 'px';
+      clone.style.transform = 'scale(' + s + ')';
+      clone.style.transformOrigin = 'top left';
+      clone.style.margin = '0';
+      inner.appendChild(clone);
+      lb.appendChild(inner);
+      lb.hidden = false;
+      return;
+    }
+    if (!lb.hidden) { lb.hidden = true; lb.innerHTML = ''; }
+  });
+  $$('.zoomable').forEach(function (z) {
+    z.setAttribute('tabindex', '0');
+    z.setAttribute('role', 'button');
+    z.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); z.click(); } });
+  });
+
+  /* ---------- print (pocket card) ---------- */
+  $$('[data-print]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var src = $(b.getAttribute('data-print'));
+      var area = $('#printArea');
+      area.innerHTML = '';
+      var c = src.cloneNode(true);
+      c.style.transform = 'none';
+      area.appendChild(c);
+      window.print();
+    });
+  });
+
+  /* ---------- init ---------- */
+  if (/[?&]all\b/.test(location.search)) document.body.classList.add('noanim');
+  buildBar();
+  slides.forEach(function (s, i) { s.setAttribute('aria-hidden', 'true'); if ('inert' in s) s.inert = true; s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); s.setAttribute('aria-label', (i + 1) + ' of ' + N); });
+  window.addEventListener('resize', fit);
+  document.addEventListener('fullscreenchange', function () { setTimeout(fit, 60); });
+  fit();
+  var start = parseInt((location.hash || '').replace('#', ''), 10);
+  go(isNaN(start) ? 0 : Math.max(0, Math.min(N - 1, start - 1)));
+  window.addEventListener('hashchange', function () {
+    var h = parseInt((location.hash || '').replace('#', ''), 10);
+    if (!isNaN(h) && h - 1 !== cur) go(Math.max(0, Math.min(N - 1, h - 1)));
+  });
+  stage.focus();
+  window.__deck = { go: go, next: next, prev: prev, count: N };
+})();
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var ids = ['emp', 'turn', 'cost', 'red', 'prog'];
+  if (!$('c-emp')) return;
+  function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+  function calc() {
+    var emp = +$('c-emp').value, turn = +$('c-turn').value, cost = +$('c-cost').value, red = +$('c-red').value, prog = +$('c-prog').value;
+    $('o-emp').textContent = emp;
+    $('o-turn').textContent = turn + '%';
+    $('o-cost').textContent = money(cost);
+    $('o-red').textContent = red + ' pts';
+    $('o-prog').textContent = money(prog);
+    var base = emp * (turn / 100) * cost;
+    var avoided = emp * (red / 100);
+    var save = avoided * cost;
+    var net3 = save * 3 - prog;
+    var roi = prog > 0 ? net3 / prog * 100 : 0;
+    var pay = save > 0 ? prog / (save / 12) : Infinity;
+    var be = (emp * cost) > 0 ? prog / (3 * emp * cost) * 100 : 0;
+    $('r-base').textContent = money(base);
+    $('r-save').textContent = money(save);
+    $('r-avoid').textContent = (Math.round(avoided * 10) / 10) + ' fewer departures a year';
+    $('r-pay').textContent = isFinite(pay) ? (Math.round(pay * 10) / 10) + ' mo' : 'never';
+    var r = $('r-roi');
+    r.textContent = Math.round(roi) + '%';
+    r.className = 'v ' + (roi >= 0 ? 'pos' : 'neg');
+    $('r-net').textContent = (net3 >= 0 ? '' : '-') + money(Math.abs(net3)) + ' net over 3 years';
+    $('r-be').textContent = (Math.round(be * 100) / 100) + ' pts';
+    var live = $('r-live');
+    if (live) live.textContent = 'Annual savings ' + money(save) + ', payback ' + (isFinite(pay) ? Math.round(pay * 10) / 10 + ' months' : 'never') + ', three year ROI ' + Math.round(roi) + ' percent.';
+  }
+  ['emp', 'turn', 'cost', 'red', 'prog'].forEach(function (k) { $('c-' + k).addEventListener('input', calc); });
+  $('c-reset').addEventListener('click', function () {
+    var d = { emp: 600, turn: 28, cost: 4500, red: 4, prog: 132000 };
+    Object.keys(d).forEach(function (k) { $('c-' + k).value = d[k]; });
+    calc();
+  });
+  calc();
+})();
+
+</script>
+</body>
+</html>
