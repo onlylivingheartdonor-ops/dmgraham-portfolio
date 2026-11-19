@@ -19,5 +19,33 @@
     "icon": "icons/dj.png",
     "url": "presentations/dj/index.html",
     "label": "PROMOTIONAL PRESENTATION"
+  },
+  {
+    "title": "Instructional Design Case Study: Lockout/Tagout Redesign",
+    "label": "CASE STUDY",
+    "description": "From needs analysis to evaluation plan: how I question a training request, design for behavior, and measure results. Fictional, illustrative project.",
+    "icon": "icons/loto-case-study.jpg",
+    "url": "presentations/loto-case-study/index.html"
+  },
+  {
+    "title": "Presentation Makeover: OSHA Electrical Safety",
+    "label": "BEFORE / AFTER",
+    "description": "Eight before/after redesigns of a federal safety deck, source errors flagged, and the paper knowledge check rebuilt as an interactive.",
+    "icon": "icons/electrical-makeover.jpg",
+    "url": "presentations/electrical-makeover/index.html"
+  },
+  {
+    "title": "How Lockout/Tagout Works: Interactive Explainer",
+    "label": "INTERACTIVE LEARNING",
+    "description": "A learner-facing explainer with practice activities, a branching scenario, captions, optional narration and a printable pocket card.",
+    "icon": "icons/loto-explainer.jpg",
+    "url": "presentations/loto-explainer/index.html"
+  },
+  {
+    "title": "Training Proposal: New-Supervisor Development Program",
+    "label": "BUSINESS CASE",
+    "description": "A pilot-first proposal with an interactive ROI calculator, budget, measurement plan and go/no-go gate. Fictional company, illustrative figures.",
+    "icon": "icons/training-proposal.jpg",
+    "url": "presentations/training-proposal/index.html"
   }
 ]
