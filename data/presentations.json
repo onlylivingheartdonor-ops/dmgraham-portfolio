@@ -47,5 +47,12 @@
     "description": "A pilot-first proposal with an interactive ROI calculator, budget, measurement plan and go/no-go gate. Fictional company, illustrative figures.",
     "icon": "icons/training-proposal.jpg",
     "url": "presentations/training-proposal/index.html"
+  },
+  {
+    "title": "Getting People to Use AI, Responsibly",
+    "label": "AI ENABLEMENT",
+    "description": "An interactive guide for learning designers and enablement teams: before-and-after prompts, a review checklist, data-handling zones, a four-week pilot and adoption measures. Fictional organization, illustrative content.",
+    "icon": "icons/ai-guide.jpg",
+    "url": "presentations/ai-guide/index.html"
   }
 ]
