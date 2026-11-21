@@ -54,5 +54,19 @@
     "description": "An interactive guide for learning designers and enablement teams: before-and-after prompts, a review checklist, data-handling zones, a four-week pilot and adoption measures. Fictional organization, illustrative content.",
     "icon": "icons/ai-guide.jpg",
     "url": "presentations/ai-guide/index.html"
+  },
+  {
+    "title": "Listening and Asking Better Questions",
+    "label": "INTERACTIVE COURSE",
+    "description": "A 15-minute self-paced Articulate Rise course on listening and questioning at work, with a branching scenario, sorting activities and decision-based knowledge checks. Fictional scenario; adapted from public FEMA material.",
+    "icon": "icons/listening-course.jpg",
+    "url": "presentations/listening-course/index.html"
+  },
+  {
+    "title": "Course Makeover: FEMA Effective Communication",
+    "label": "BEFORE / AFTER",
+    "description": "Two before/after redesigns of a FEMA classroom lesson: a logistics opener replaced by a problem scene, and a table of nonverbal cues rebuilt as an interactive picture.",
+    "icon": "icons/listening-makeover.jpg",
+    "url": "presentations/listening-makeover/index.html"
   }
 ]
